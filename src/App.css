@@ -1,8 +1,9 @@
 .App {
   text-align: center;
-  background-size: cover;
-  background-position: center;
+  background-size: cover !important;
+  background-position: center !important;
 }
+
 
 .App-logo {
   height: 40vmin;

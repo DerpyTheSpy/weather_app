@@ -20,21 +20,21 @@ const getBackgroundImage = (icon) => {
       return 'url(https://www.baltana.com/files/wallpapers-2/Sun-Clouds-HD-Desktop-Wallpaper-09066.jpg)';
     case '09d':
     case '09n':
-      return 'url(to/shower-rain.jpg)';
+      return 'url(https://getwallpapers.com/wallpaper/full/4/e/4/770144-vertical-rainy-day-background-3840x2160-mac.jpg)';
     case '10d':
     case '10n':
-      return 'url(to/rain.jpg)';
+      return 'url(https://getwallpapers.com/wallpaper/full/8/f/7/552643.jpg)';
     case '11d':
     case '11n':
       return 'url(https://c.pxhere.com/photos/c8/10/thunderstorm_flashes_night_weather_sky_forward_nature_storm-1438107.jpg!d)';
     case '13d':
     case '13n':
-      return 'url(to/snow.jpg)';
+      return 'url(https://wallpaperaccess.com/full/3432153.jpg)';
     case '50d':
     case '50n':
-      return 'url(to/mist.jpg)';
+      return 'url(https://wallpapercave.com/wp/wp4155374.jpg)';
     default:
-      return 'url(to/default.jpg)';
+      return 'url(https://wallpapercave.com/wp/qQa5Pd7.jpg)';
   }
 };
 
