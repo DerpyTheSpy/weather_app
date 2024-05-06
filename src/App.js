@@ -42,6 +42,8 @@ const App = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  
+
   useEffect(() => {
     document.body.style.transition = 'background-image 0.5s ease';
   }, []);
@@ -55,7 +57,7 @@ const App = () => {
 
       const data = await response.json();
       setData(data);
-      document.body.style.backgroundImage = `url(${getBackgroundImage(data.weather[0].icon)})`;
+      document.body.style.backgroundImage = `url(${getBackgroundImage(data?.weather[0]?.icon)})`;
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
@@ -67,7 +69,7 @@ const App = () => {
     <div className="App" style={{ backgroundSize: 'cover' }}>
       <WeatherInput onSearch={handleSearch} />
       {loading && <p>Loading...</p>}
-      {data && !loading && <WeatherDisplay data={data} location={data.name} />}
+      {data &&!loading && <WeatherDisplay data={data} location={data.name} />}
     </div>
   );
 };

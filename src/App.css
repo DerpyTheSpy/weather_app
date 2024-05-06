@@ -2,8 +2,8 @@
   text-align: center;
   background-size: cover !important;
   background-position: center !important;
+  margin: 2rem; /* increase the margin to 2rem */
 }
-
 
 .App-logo {
   height: 40vmin;
