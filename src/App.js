@@ -54,12 +54,19 @@ const App = () => {
       const response = await fetch(
         `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=metric&appid=85066c6de56d3de5fcc05b6934af3e9e`
       );
-
+  
+      if (!response.ok) {
+        throw new Error('City not found');
+      }
+  
       const data = await response.json();
       setData(data);
       document.body.style.backgroundImage = `url(${getBackgroundImage(data?.weather[0]?.icon)})`;
     } catch (error) {
       console.error('Error fetching data:', error);
+      if (error.message === 'City not found') {
+        alert('Please select a valid city');
+      }
     } finally {
       setLoading(false);
     }

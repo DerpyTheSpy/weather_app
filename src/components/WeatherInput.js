@@ -2,30 +2,20 @@ import React, { useState } from 'react';
 
 const WeatherInput = ({ onSearch }) => {
   const [location, setLocation] = useState('');
-  const [error, setError] = useState(null);
 
   const handleSearch = (e) => {
     e.preventDefault();
     if (!location) {
-      setError('Please enter a city name');
-    } else {
-      onSearch(location);
-      setError(null);
+      alert('No input detected. Please enter a city name');
+      return;
     }
+    onSearch(location);
   };
 
   const handleInputChange = (e) => {
     const value = e.target.value;
-    if (value.trim().length > 0) {
-      setLocation(value);
-      setError(null);
-    } else {
-      setError('Please enter a city name');
-      setLocation('');
-    }
+    setLocation(value);
   };
-
-  
 
   return (
     <form onSubmit={handleSearch}>
@@ -35,7 +25,6 @@ const WeatherInput = ({ onSearch }) => {
         value={location}
         onChange={handleInputChange}
       />
-      {error && <p style={{ color: 'red' }}>{error}</p>}
       <button type="submit">Search</button>
     </form>
   );
