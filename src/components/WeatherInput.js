@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './WeatherInput.css';
 
 const WeatherInput = ({ onSearch }) => {
   const [location, setLocation] = useState('');
@@ -18,14 +19,17 @@ const WeatherInput = ({ onSearch }) => {
   };
 
   return (
-    <form onSubmit={handleSearch}>
+    <form onSubmit={handleSearch} className="weather-input-form">
       <input
         type="text"
         placeholder="Enter a city"
         value={location}
         onChange={handleInputChange}
+        className="weather-input"
       />
-      <button type="submit">Search</button>
+      <button type="submit" className="weather-button">
+        Search
+      </button>
     </form>
   );
 };

@@ -5,36 +5,36 @@ import WeatherDisplay from './components/WeatherDisplay.js';
 const getBackgroundImage = (icon) => {
   switch (icon) {
     case '01d':
-      return require('./components/images/01d.jpg');
+      return require('./components/Images/01d.jpg');
     case '01n':
-      return require('./components/images/01n.jpg');
+      return require('./components/Images/01n.jpg');
     case '02d':
-      return require('./components/images/02d.jpg');
+      return require('./components/Images/02d.jpg');
     case '02n':
-      return require('./components/images/02n.jpg');
+      return require('./components/Images/02n.jpg');
     case '03d':
     case '03n':
-      return require('./components/images/03d.jpg');
+      return require('./components/Images/03d.jpg');
     case '04d':
     case '04n':
-      return require('./components/images/04d.jpg');
+      return require('./components/Images/04d.jpg');
     case '09d':
     case '09n':
-      return require('./components/images/09d.jpg');
+      return require('./components/Images/09d.jpg');
     case '10d':
     case '10n':
-      return require('./components/images/10d.jpg');
+      return require('./components/Images/10d.jpg');
     case '11d':
     case '11n':
-      return require('./components/images/11d.jpg');
+      return require('./components/Images/11d.jpg');
     case '13d':
     case '13n':
-      return require('./components/images/13d.jpg');
+      return require('./components/Images/13d.jpg');
     case '50d':
     case '50n':
-      return require('./components/images/50d.jpg');
+      return require('./components/Images/50d.jpg');
     default:
-      return require('./components/images/default.jpg');
+      return require('./components/Images/default.jpg');
   }
 };
 
@@ -44,6 +44,13 @@ const App = () => {
 
   useEffect(() => {
     document.body.style.transition = 'background-image 0.5s ease';
+    document.body.style.backgroundImage = `url(${require('./components/Images/default.jpg')})`;
+    document.body.style.backgroundSize = 'cover';
+    document.body.style.backgroundPosition = 'top center';
+    document.body.style.backgroundRepeat = 'no-repeat';
+    document.body.style.height = '100vh';
+    document.body.style.margin = '0';
+    document.body.style.padding = '0';
   }, []);
 
   const handleSearch = async (location) => {
@@ -56,6 +63,12 @@ const App = () => {
       const data = await response.json();
       setData(data);
       document.body.style.backgroundImage = `url(${getBackgroundImage(data?.weather[0]?.icon)})`;
+      document.body.style.backgroundSize = 'cover';
+      document.body.style.backgroundPosition = 'top center';
+      document.body.style.backgroundRepeat = 'no-repeat';
+      document.body.style.height = '100vh';
+      document.body.style.margin = '0';
+      document.body.style.padding = '0';
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
