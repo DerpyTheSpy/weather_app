@@ -20,16 +20,18 @@ const WeatherInput = ({ onSearch }) => {
 
   return (
     <form onSubmit={handleSearch} className="weather-input-form">
-      <input
-        type="text"
-        placeholder="Enter a city"
-        value={location}
-        onChange={handleInputChange}
-        className="weather-input"
-      />
-      <button type="submit" className="weather-button">
-        Search
-      </button>
+      <div className="weather-input-container"> {/* Wrap input and button in a container */}
+        <input
+          type="text"
+          placeholder="Enter a city"
+          value={location}
+          onChange={handleInputChange}
+          className="weather-input"
+        />
+        <button type="submit" className="weather-button">
+          Search
+        </button>
+      </div>
     </form>
   );
 };

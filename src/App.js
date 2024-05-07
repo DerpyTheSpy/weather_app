@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import WeatherInput from './components/WeatherInput';
 import WeatherDisplay from './components/WeatherDisplay.js';
+import './App.css'
 
 const getBackgroundImage = (icon) => {
   switch (icon) {
@@ -41,6 +42,7 @@ const getBackgroundImage = (icon) => {
 const App = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     document.body.style.transition = 'background-image 0.5s ease';
@@ -72,14 +74,20 @@ const App = () => {
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
-      setLoading(false);
+      setTimeout(() => {
+        setLoading(false);
+      }, 2000);
     }
   };
 
   return (
     <div className="App" style={{ backgroundSize: 'cover' }}>
       <WeatherInput onSearch={handleSearch} />
-      {loading && <p>Loading...</p>}
+      {loading && (
+        <div className="loading-container">
+          <p className="loading-text">Loading...</p>
+        </div>
+      )}
       {data &&!loading && <WeatherDisplay data={data} location={data.name} />}
     </div>
   );
