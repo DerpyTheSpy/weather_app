@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import WeatherInput from './components/WeatherInput';
 import WeatherDisplay from './components/WeatherDisplay.js';
+import RainAnimation from './components/RainAnimation';
+import SnowAnimation from './components/SnowAnimation';
+import ThunderstormAnimation from './components/ThunderstormAnimation';
 import './App.css'
 
 const getBackgroundImage = (icon) => {
@@ -43,6 +46,7 @@ const App = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [animation, setAnimation] = useState(null);
 
   useEffect(() => {
     document.body.style.transition = 'background-image 0.5s ease';
@@ -71,6 +75,49 @@ const App = () => {
       document.body.style.height = '100vh';
       document.body.style.margin = '0';
       document.body.style.padding = '0';
+      setAnimation(null);
+
+      const weather = data?.weather[0]?.id;
+      switch (weather) {
+        case '500':
+        case '501':
+        case '502':
+        case '503':
+        case '504':
+        case '511':
+        case '520':
+        case '521':
+        case '522':
+        case '531':
+          setAnimation('rain');
+          break;
+        case '600':
+        case '601':
+        case '602':
+        case '611':
+        case '612':
+        case '615':
+        case '616':
+        case '620':
+        case '621':
+        case '622':
+          setAnimation('snow');
+          break;
+        case '200':
+        case '201':
+        case '202':
+        case '210':
+        case '211':
+        case '212':
+        case '221':
+        case '230':
+        case '231':
+        case '232':
+          setAnimation('thunderstorm');
+          break;
+        default:
+          setAnimation(null);
+      }
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
@@ -79,7 +126,6 @@ const App = () => {
       }, 2000);
     }
   };
-
   return (
     <div className="App" style={{ backgroundSize: 'cover' }}>
       <WeatherInput onSearch={handleSearch} />
@@ -88,9 +134,20 @@ const App = () => {
           <p className="loading-text">Loading...</p>
         </div>
       )}
-      {data &&!loading && <WeatherDisplay data={data} location={data.name} />}
+      {data &&!loading && (
+        <>
+          <WeatherDisplay data={data} location={data.name} />
+          {animation && (
+            <div className="animation-container">
+              {animation === 'rain' && <RainAnimation />}
+              {animation === 'snow' && <SnowAnimation />}
+              {animation === 'thunderstorm' && <ThunderstormAnimation />}
+            </div>
+          )}
+        </>
+      )}
     </div>
   );
-};
+}
 
 export default App;
