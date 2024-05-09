@@ -47,6 +47,8 @@ const App = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [animation, setAnimation] = useState(null);
+  const [showAlert, setShowAlert] = useState(false);
+  const [inputValue, setInputValue] = useState('');
 
   useEffect(() => {
     document.body.style.transition = 'background-image 0.5s ease';
@@ -67,68 +69,81 @@ const App = () => {
       );
 
       const data = await response.json();
-      setData(data);
-      document.body.style.backgroundImage = `url(${getBackgroundImage(data?.weather[0]?.icon)})`;
-      document.body.style.backgroundSize = 'cover';
-      document.body.style.backgroundPosition = 'top center';
-      document.body.style.backgroundRepeat = 'no-repeat';
-      document.body.style.height = '100vh';
-      document.body.style.margin = '0';
-      document.body.style.padding = '0';
-      setAnimation(null);
+      if (data && data.weather && data.weather.length > 0) {
+        setData(data);
+        document.body.style.backgroundImage = `url(${getBackgroundImage(data?.weather[0]?.icon)})`;
+        document.body.style.backgroundSize = 'cover';
+        document.body.style.backgroundPosition = 'top center';
+        document.body.style.backgroundRepeat = 'no-repeat';
+        document.body.style.height = '100vh';
+        document.body.style.margin = '0';
+        document.body.style.padding = '0';
+        setAnimation(null);
 
-      const weather = data?.weather[0]?.id;
-      switch (weather) {
-        case '500':
-        case '501':
-        case '502':
-        case '503':
-        case '504':
-        case '511':
-        case '520':
-        case '521':
-        case '522':
-        case '531':
-          setAnimation('rain');
-          break;
-        case '600':
-        case '601':
-        case '602':
-        case '611':
-        case '612':
-        case '615':
-        case '616':
-        case '620':
-        case '621':
-        case '622':
-          setAnimation('snow');
-          break;
-        case '200':
-        case '201':
-        case '202':
-        case '210':
-        case '211':
-        case '212':
-        case '221':
-        case '230':
-        case '231':
-        case '232':
-          setAnimation('thunderstorm');
-          break;
-        default:
-          setAnimation(null);
+        const weather = data?.weather[0]?.id;
+        switch (weather) {
+          case '500':
+          case '501':
+          case '502':
+          case '503':
+          case '504':
+          case '511':
+          case '520':
+          case '521':
+          case '522':
+          case '531':
+            setAnimation('rain');
+            break;
+          case '600':
+          case '601':
+          case '602':
+          case '611':
+          case '612':
+          case '615':
+          case '616':
+          case '620':
+          case '621':
+          case '622':
+            setAnimation('snow');
+            break;
+          case '200':
+          case '201':
+          case '202':
+          case '210':
+          case '211':
+          case '212':
+          case '221':
+          case '230':
+          case '231':
+          case '232':
+            setAnimation('thunderstorm');
+            break;
+          default:
+            setAnimation(null);
+        }
+      } else {
+        setError('Error, unknown input.');
+        setInputValue('');
       }
     } catch (error) {
       console.error('Error fetching data:', error);
+      setError('Error, unknown input.');
+      setInputValue('');
     } finally {
       setTimeout(() => {
         setLoading(false);
       }, 2000);
     }
   };
+  
   return (
     <div className="App" style={{ backgroundSize: 'cover' }}>
-      <WeatherInput onSearch={handleSearch} />
+      <WeatherInput
+        onSearch={handleSearch}
+        error={error}
+        inputValue={inputValue}
+        setInputValue={setInputValue}
+      />
       {loading && (
         <div className="loading-container">
           <p className="loading-text">Loading...</p>
@@ -148,6 +163,6 @@ const App = () => {
       )}
     </div>
   );
-}
+};
 
 export default App;
