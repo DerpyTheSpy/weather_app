@@ -67,6 +67,17 @@ const App = () => {
       const response = await fetch(
         `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=metric&appid=85066c6de56d3de5fcc05b6934af3e9e`
       );
+  
+      if (!response.ok) {
+        if (response.status === 404) {
+          setError('Error: City not found.');
+        } else {
+          setError('Error: An unexpected error occurred.');
+        }
+        setInputValue('');
+        return;
+      }
+  
 
       const data = await response.json();
       if (data && data.weather && data.weather.length > 0) {
@@ -120,20 +131,20 @@ const App = () => {
             break;
           default:
             setAnimation(null);
+          }
+        } else {
+          setError('Error: Unknown input.');
+          setInputValue('');
         }
-      } else {
-        setError('Error, unknown input.');
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        setError('Error: An unexpected error occurred.');
         setInputValue('');
+      } finally {
+        setTimeout(() => {
+          setLoading(false);
+        }, 2000);
       }
-    } catch (error) {
-      console.error('Error fetching data:', error);
-      setError('Error, unknown input.');
-      setInputValue('');
-    } finally {
-      setTimeout(() => {
-        setLoading(false);
-      }, 2000);
-    }
   };
   
   return (
