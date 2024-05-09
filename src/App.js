@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import WeatherInput from './components/WeatherInput';
+import WeatherInput from './components/WeatherInput.js';
 import WeatherDisplay from './components/WeatherDisplay.js';
-import RainAnimation from './components/RainAnimation';
-import SnowAnimation from './components/SnowAnimation';
-import ThunderstormAnimation from './components/ThunderstormAnimation';
+import RainAnimation from './components/RainAnimation.js';
+import SnowAnimation from './components/SnowAnimation.js';
+import ThunderstormAnimation from './components/ThunderstormAnimation.js';
 import './App.css'
 
 const getBackgroundImage = (icon) => {
