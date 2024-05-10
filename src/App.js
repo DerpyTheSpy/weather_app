@@ -66,17 +66,21 @@ const App = ({ selectedCity }) => {
       const response = await fetch(
         `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=metric&appid=85066c6de56d3de5fcc05b6934af3e9e`
       );
-
+  
       if (!response.ok) {
         if (response.status === 404) {
           setError('Error: City not found.');
         } else {
           setError('Error: An unexpected error occurred.');
         }
+        window.alert(error); // display an alert box with the error message
         setInputValue('');
+        setTimeout(() => {
+          setLoading(false); // set loading to false after half a second
+        }, 500);
         return;
       }
-
+  
       const data = await response.json();
       if (data && data.weather && data.weather.length > 0) {
         setData(data);
@@ -88,7 +92,7 @@ const App = ({ selectedCity }) => {
         document.body.style.margin = '0';
         document.body.style.padding = '0';
         setAnimation(null);
-
+  
         const weather = data?.weather[0]?.id;
         switch (weather) {
           case '500':
@@ -132,16 +136,18 @@ const App = ({ selectedCity }) => {
         }
       } else {
         setError('Error: Unknown input.');
+        window.alert(error); // display an alert box with the error message
         setInputValue('');
       }
     } catch (error) {
       console.error('Error fetching data:', error);
       setError('Error: An unexpected error occurred.');
+      window.alert(error); // display an alert box with the error message
       setInputValue('');
     } finally {
       setTimeout(() => {
-        setLoading(false);
-      }, 2000);
+        setLoading(false); // set loading to false after half a second
+      }, 500);
     }
   };
 
