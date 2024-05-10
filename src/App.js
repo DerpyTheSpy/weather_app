@@ -172,14 +172,18 @@ const App = ({ selectedCity }) => {
       )}
       {data &&!loading && (
         <>
-          <WeatherDisplay data={data} location={data.name} />
-          {animation && (
+          <div className="background-container">
             <div className="animation-container">
-              {animation === 'rain' && <RainAnimation />}
-              {animation === 'snow' && <SnowAnimation />}
-              {animation === 'thunderstorm' && <ThunderstormAnimation />}
+              {animation && (
+                <>
+                  {animation === 'rain' && <RainAnimation />}
+                  {animation === 'snow' && <SnowAnimation />}
+                  {animation === 'thunderstorm' && <ThunderstormAnimation />}
+                </>
+              )}
             </div>
-          )}
+            <WeatherDisplay data={data} location={data.name} />
+          </div>
         </>
       )}
     </div>
