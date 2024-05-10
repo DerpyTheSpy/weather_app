@@ -42,12 +42,11 @@ const getBackgroundImage = (icon) => {
   }
 };
 
-const App = () => {
+const App = ({ selectedCity }) => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [animation, setAnimation] = useState(null);
-  const [showAlert, setShowAlert] = useState(false);
   const [inputValue, setInputValue] = useState('');
 
   useEffect(() => {
@@ -67,7 +66,7 @@ const App = () => {
       const response = await fetch(
         `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=metric&appid=85066c6de56d3de5fcc05b6934af3e9e`
       );
-  
+
       if (!response.ok) {
         if (response.status === 404) {
           setError('Error: City not found.');
@@ -77,7 +76,6 @@ const App = () => {
         setInputValue('');
         return;
       }
-  
 
       const data = await response.json();
       if (data && data.weather && data.weather.length > 0) {
@@ -131,22 +129,28 @@ const App = () => {
             break;
           default:
             setAnimation(null);
-          }
-        } else {
-          setError('Error: Unknown input.');
-          setInputValue('');
         }
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        setError('Error: An unexpected error occurred.');
+      } else {
+        setError('Error: Unknown input.');
         setInputValue('');
-      } finally {
-        setTimeout(() => {
-          setLoading(false);
-        }, 2000);
       }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      setError('Error: An unexpected error occurred.');
+      setInputValue('');
+    } finally {
+      setTimeout(() => {
+        setLoading(false);
+      }, 2000);
+    }
   };
-  
+
+  useEffect(() => {
+    if (selectedCity) {
+      handleSearch(selectedCity);
+    }
+  }, [selectedCity]);
+
   return (
     <div className="App" style={{ backgroundSize: 'cover' }}>
       <WeatherInput
