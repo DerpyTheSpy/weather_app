@@ -94,46 +94,24 @@ const App = ({ selectedCity }) => {
         setAnimation(null);
   
         const weather = data?.weather[0]?.id;
-        switch (weather) {
-          case '500':
-          case '501':
-          case '502':
-          case '503':
-          case '504':
-          case '511':
-          case '520':
-          case '521':
-          case '522':
-          case '531':
+        switch (true) {
+          case weather >= 500 && weather <= 531:
             setAnimation('rain');
+            console.log('Animation: rain');
             break;
-          case '600':
-          case '601':
-          case '602':
-          case '611':
-          case '612':
-          case '615':
-          case '616':
-          case '620':
-          case '621':
-          case '622':
+          case weather >= 600 && weather <= 622:
             setAnimation('snow');
+            console.log('Animation: snow');
             break;
-          case '200':
-          case '201':
-          case '202':
-          case '210':
-          case '211':
-          case '212':
-          case '221':
-          case '230':
-          case '231':
-          case '232':
+          case weather >= 200 && weather <= 232:
             setAnimation('thunderstorm');
+            console.log('Animation: thunderstorm');
             break;
           default:
             setAnimation(null);
+            console.log('Animation: none');
         }
+        console.log('Animation state:', animation);
       } else {
         setError('Error: Unknown input.');
         window.alert(error); // display an alert box with the error message
@@ -174,13 +152,9 @@ const App = ({ selectedCity }) => {
         <>
           <div className="background-container">
             <div className="animation-container">
-              {animation && (
-                <>
-                  {animation === 'rain' && <RainAnimation />}
-                  {animation === 'snow' && <SnowAnimation />}
-                  {animation === 'thunderstorm' && <ThunderstormAnimation />}
-                </>
-              )}
+              {animation === 'rain' && <RainAnimation />}
+              {animation === 'snow' && <SnowAnimation />}
+              {animation === 'thunderstorm' && <ThunderstormAnimation />}
             </div>
             <WeatherDisplay data={data} location={data.name} />
           </div>
