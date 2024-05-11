@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './WeatherInput.css';
 
+
 const WeatherInput = ({ onSearch }) => {
   const [location, setLocation] = useState('');
 
