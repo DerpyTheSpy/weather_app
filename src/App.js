@@ -149,16 +149,14 @@ const App = ({ selectedCity }) => {
         </div>
       )}
       {data &&!loading && (
-        <>
-          <div className="background-container">
+            <>
             <div className="animation-container">
               {animation === 'rain' && <RainAnimation />}
               {animation === 'snow' && <SnowAnimation />}
               {animation === 'thunderstorm' && <ThunderstormAnimation />}
             </div>
             <WeatherDisplay data={data} location={data.name} />
-          </div>
-        </>
+          </>
       )}
     </div>
   );
