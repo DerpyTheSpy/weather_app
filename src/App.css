@@ -1,7 +1,6 @@
 .App {
   position: relative;
   overflow: hidden;
-  height: auto;
 }
 
 .loading-container {
@@ -13,7 +12,7 @@
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-  z-index: 1000;
+  z-index: 1;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -36,9 +35,8 @@
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
-  height: auto;
-
+  width: 100%; 
+  z-index: 2;
 }
 
 .rain-animation,.snow-animation,.thunderstorm-animation {
@@ -47,4 +45,5 @@
   left: 0;
   width: 100%;
   height: 100%;
+  z-index: 2;
 }

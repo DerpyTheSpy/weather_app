@@ -40,6 +40,7 @@
   align-items: center;
   margin-top: 20px;
   margin-bottom: 200px; /* Add this line */
+  z-index: 1;
 }
 
 .search-input {
