@@ -9,13 +9,12 @@
 .snow {
   position: absolute;
   top: -100px;
-  left: calc(var(--random-left) * 1%);
+  left: 50%; /* center horizontally */
   width: 5px;
   height: 5px;
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: rgba(255, 255, 255, 0.8);
   border-radius: 50%;
-  animation: snow 10s linear infinite;
-  transform: rotate(calc(-20deg + var(--random-degree) * 1deg));
+  animation: snowfall 10s linear infinite;
 }
 
 .snow-container::after {
@@ -47,13 +46,13 @@
   animation: snow-drop 2s ease-in infinite;
 }
 
-@keyframes snow {
+@keyframes snowfall {
   0% {
-    transform: translate(0, 0) rotate(calc(-20deg + var(--random-degree) * 1deg));
+    transform: translateY(0);
     opacity: 1;
   }
   100% {
-    transform: translate(0, 200vh) rotate(calc(-20deg + var(--random-degree) * 1deg));
+    transform: translateY(100vh);
     opacity: 0;
   }
 }
@@ -66,6 +65,8 @@
     transform: translateY(-100%);
   }
 }
+
+
 
 .snow:nth-child(1) {
   animation-delay: 0s;
