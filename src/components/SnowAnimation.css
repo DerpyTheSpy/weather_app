@@ -17,8 +17,12 @@
   --animation-delay: 0s; /* Set the default animation delay to 0s */
   animation: snow var(--animation-duration, 10s) linear infinite var(--animation-delay, 0s);
   transform-box: fill-box;
+  opacity: 0; /* Set the initial opacity to 0 */
 }
 
+.snow-invisible {
+  opacity: 0; /* Set the opacity to 0 for the invisible snowflakes */
+}
 .snow-container::after {
   content: "";
   position: absolute;
