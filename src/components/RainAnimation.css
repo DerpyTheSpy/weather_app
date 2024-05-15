@@ -40,9 +40,11 @@
 @keyframes rain {
   0% {
     transform: translate(0, 0) rotate(45deg);
+    opacity: 1;
   }
   100% {
-    transform: translate(-100%, 0) rotate(45deg);
+    transform: translate(0, 200vh) rotate(45deg); /* increase the translateY value */
+    opacity: 0; /* make the snowflakes disappear at the end */
   }
 }
 

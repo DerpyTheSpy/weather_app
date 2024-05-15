@@ -91,8 +91,8 @@ const App = ({ selectedCity }) => {
         document.body.style.height = '100vh';
         document.body.style.margin = '0';
         document.body.style.padding = '0';
-        setAnimation(null);
-  
+        setAnimation(null); // set animation state to null to reset the animation
+
         const weather = data?.weather[0]?.id;
         switch (true) {
           case weather >= 500 && weather <= 531:
