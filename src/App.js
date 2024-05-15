@@ -60,13 +60,40 @@ const App = ({ selectedCity }) => {
     document.body.style.padding = '0';
   }, []);
 
+  useEffect(() => {
+    if (selectedCity) {
+      handleSearch(selectedCity);
+    }
+  }, [selectedCity]);
+
+  useEffect(() => {
+    if (data && data.weather && data.weather.length > 0) {
+      const weather = data?.weather[0]?.id;
+      switch (true) {
+        case weather >= 500 && weather <= 531:
+          setAnimation('rain');
+          break;
+        case weather >= 600 && weather <= 622:
+          setAnimation('snow');
+          break;
+        case weather >= 200 && weather <= 232:
+          setAnimation('thunderstorm');
+          break;
+        default:
+          setAnimation(null);
+      }
+      console.log('Animation state:', animation);
+    }
+  }, [data]);
+
   const handleSearch = async (location) => {
     setLoading(true);
+    setAnimation(null); // reset animation state to null
     try {
       const response = await fetch(
         `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=metric&appid=85066c6de56d3de5fcc05b6934af3e9e`
       );
-  
+
       if (!response.ok) {
         if (response.status === 404) {
           setError('Error: City not found.');
@@ -80,8 +107,9 @@ const App = ({ selectedCity }) => {
         }, 500);
         return;
       }
-  
+
       const data = await response.json();
+      console.log('Data state:', data);
       if (data && data.weather && data.weather.length > 0) {
         setData(data);
         document.body.style.backgroundImage = `url(${getBackgroundImage(data?.weather[0]?.icon)})`;
@@ -91,27 +119,6 @@ const App = ({ selectedCity }) => {
         document.body.style.height = '100vh';
         document.body.style.margin = '0';
         document.body.style.padding = '0';
-        setAnimation(null); // set animation state to null
-  
-        const weather = data?.weather[0]?.id;
-        switch (true) {
-          case weather >= 500 && weather <= 531:
-            setAnimation('rain');
-            console.log('Animation: rain');
-            break;
-          case weather >= 600 && weather <= 622:
-            setAnimation('snow');
-            console.log('Animation: snow');
-            break;
-          case weather >= 200 && weather <= 232:
-            setAnimation('thunderstorm');
-            console.log('Animation: thunderstorm');
-            break;
-          default:
-            setAnimation(null);
-            console.log('Animation: none');
-        }
-        console.log('Animation state:', animation);
       } else {
         setError('Error: Unknown input.');
         window.alert(error); // display an alert box with the error message
@@ -129,11 +136,6 @@ const App = ({ selectedCity }) => {
     }
   };
 
-  useEffect(() => {
-    if (selectedCity) {
-      handleSearch(selectedCity);
-    }
-  }, [selectedCity]);
 
   return (
     <div className="App" style={{ backgroundSize: 'cover' }}>
@@ -149,14 +151,14 @@ const App = ({ selectedCity }) => {
         </div>
       )}
       {data &&!loading && (
-            <>
-            <div className="animation-container">
-              {animation === 'rain' && <RainAnimation />}
-              {animation === 'snow' && <SnowAnimation />}
-              {animation === 'thunderstorm' && <ThunderstormAnimation />}
-            </div>
-            <WeatherDisplay data={data} location={data.name} />
-          </>
+        <>
+          <div className="animation-container">
+            {animation === 'rain' && <RainAnimation />}
+            {animation === 'snow' && <SnowAnimation animation={animation} />}
+            {animation === 'thunderstorm' && <ThunderstormAnimation />}
+          </div>
+          <WeatherDisplay data={data} location={data.name} />
+        </>
       )}
     </div>
   );
