@@ -85,16 +85,16 @@ const App = ({ selectedCity }) => {
       }
       console.log('Animation state:', animation);
     }
-  }, [data]);
+  }, [data, animation]);
 
   const handleSearch = async (location) => {
     setLoading(true);
     setAnimation(null); // reset animation state to null
     try {
       const response = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=metric&appid=85066c6de56d3de5fcc05b6934af3e9e`
+        `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=${preferences.units}&appid=85066c6de56d3de5fcc05b6934af3e9e`
       );
-
+  
       if (!response.ok) {
         if (response.status === 404) {
           setError('Error: City not found.');
@@ -108,7 +108,7 @@ const App = ({ selectedCity }) => {
         }, 500);
         return;
       }
-
+  
       const data = await response.json();
       console.log('Data state:', data);
       if (data && data.weather && data.weather.length > 0) {
@@ -136,8 +136,7 @@ const App = ({ selectedCity }) => {
       }, 500);
     }
   };
-
-
+ 
   return (
     <div className="App" style={{ backgroundSize: 'cover' }}>
       <UserPreferences />
@@ -159,7 +158,7 @@ const App = ({ selectedCity }) => {
             {animation === 'snow' && <SnowAnimation animation={animation} />}
             {animation === 'thunderstorm' && <ThunderstormAnimation />}
           </div>
-          <WeatherDisplay data={data} location={data.name} />
+          <WeatherDisplay data={data} location={selectedCity} />
         </>
       )}
     </div>

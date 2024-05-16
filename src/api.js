@@ -1,8 +1,6 @@
-const API_BASE_URL = 'https://your-api-url.com';
-
 export async function fetchUserPreferences() {
   try {
-    const response = await fetch(`${API_BASE_URL}/user-preferences`);
+    const response = await fetch(`http://localhost:3000/user-preferences`);
     if (!response.ok) {
       throw new Error('Error fetching user preferences');
     }
@@ -14,8 +12,9 @@ export async function fetchUserPreferences() {
 }
 
 export async function createUserPreference(newPreference) {
+  console.log('Creating new preference:', newPreference);
   try {
-    const response = await fetch(`${API_BASE_URL}/user-preferences`, {
+    const response = await fetch(`http://localhost:3000/user-preferences`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(newPreference),
@@ -29,10 +28,10 @@ export async function createUserPreference(newPreference) {
     throw error;
   }
 }
-
 export async function updateUserPreference(id, updatedPreference) {
+  console.log('Updating preference with id:', id);
   try {
-    const response = await fetch(`${API_BASE_URL}/user-preferences/${id}`, {
+    const response = await fetch(`http://localhost:3000/user-preferences/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(updatedPreference),
@@ -48,8 +47,9 @@ export async function updateUserPreference(id, updatedPreference) {
 }
 
 export async function deleteUserPreference(id) {
+  console.log('Deleting preference with id:', id);
   try {
-    const response = await fetch(`${API_BASE_URL}/user-preferences/${id}`, {
+    const response = await fetch(`http://localhost:3000/user-preferences/${id}`, {
       method: 'DELETE',
     });
     if (!response.ok) {
