@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import './UserPreferences.css'
 import { fetchUserPreferences, createUserPreference, updateUserPreference, deleteUserPreference } from '../api'
 
 function UserPreferences() {
@@ -6,6 +7,7 @@ function UserPreferences() {
   const [newPreference, setNewPreference] = useState({ units: '', location: '', notifications: false });
   const [isUpdating, setIsUpdating] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [showPreferences, setShowPreferences] = useState(false);
 
   useEffect(() => {
     fetchUserPreferences()
@@ -45,79 +47,86 @@ function UserPreferences() {
     }
   };
   
+  const handleTogglePreferences = () => {
+    setShowPreferences(!showPreferences);
+  };
+
   return (
     <div>
-      <h2>User Preferences</h2>
-      <form
-        onSubmit={(event) => {
-          event.preventDefault();
-          handleCreatePreference();
-        }}
-      >
-        <label>
-          Units:
-          <select
-            value={newPreference.units}
-            onChange={(event) =>
-              setNewPreference({...newPreference, units: event.target.value })
-            }
-          >
-            <option value="metric">Metric</option>
-            <option value="imperial">Imperial</option>
-          </select>
-        </label>
-        <br />
-        <label>
-          Location:
-          <input
-            type="text"
-            value={newPreference.location}
-            onChange={(event) =>
-              setNewPreference({...newPreference, location: event.target.value })
-            }
-          />
-        </label>
-        <br />
-        <label>
-          Notifications:
-          <input
-            type="checkbox"
-            checked={newPreference.notifications}
-            onChange={(event) =>
-              setNewPreference({...newPreference, notifications: event.target.checked })
-            }
-          />
-        </label>
-        <br />
-        <button type="submit">Create Preference</button>
-      </form>
-      <ul>
-        {preferences.map((preference) => (
-          <li key={preference.id}>
-            <p>Units: {preference.units}</p>
-            <p>Location: {preference.location}</p>
-            <p>Notifications: {preference.notifications? 'Yes' : 'No'}</p>
-            <button
-              disabled={isUpdating}
-              onClick={() =>
-                handleUpdatePreference(preference.id, {
-                  units: 'Metric',
-                  location: 'New York',
-                  notifications: true,
-                })
+      <button onClick={handleTogglePreferences}>Toggle Preferences</button>
+      <div className={`user-preferences-container ${showPreferences ? 'show' : ''}`}>
+        <h2>User Preferences</h2>
+        <form
+          onSubmit={(event) => {
+            event.preventDefault();
+            handleCreatePreference();
+          }}
+        >
+          <label>
+            Units:
+            <select
+              value={newPreference.units}
+              onChange={(event) =>
+                setNewPreference({...newPreference, units: event.target.value })
               }
             >
-              Update
-            </button>
-            <button
-              disabled={isDeleting}
-              onClick={() => handleDeletePreference(preference.id)}
-            >
-              Delete
-            </button>
-          </li>
-        ))}
-      </ul>
+              <option value="metric">Metric</option>
+              <option value="imperial">Imperial</option>
+            </select>
+          </label>
+          <br />
+          <label>
+            Location:
+            <input
+              type="text"
+              value={newPreference.location}
+              onChange={(event) =>
+                setNewPreference({...newPreference, location: event.target.value })
+              }
+            />
+          </label>
+          <br />
+          <label>
+            Notifications:
+            <input
+              type="checkbox"
+              checked={newPreference.notifications}
+              onChange={(event) =>
+                setNewPreference({...newPreference, notifications: event.target.checked })
+              }
+            />
+          </label>
+          <br />
+          <button type="submit">Create Preference</button>
+        </form>
+        <ul>
+          {preferences.map((preference) => (
+            <li key={preference.id}>
+              <p>Units: {preference.units}</p>
+              <p>Location: {preference.location}</p>
+              <p>Notifications: {preference.notifications? 'Yes' : 'No'}</p>
+              <button
+                disabled={isUpdating}
+                onClick={() =>
+                  handleUpdatePreference(preference.id, {
+                    units: 'Metric',
+                    location: 'New York',
+                    notifications: true,
+                  })
+                }
+              >
+                Update
+              </button>
+              <button
+                disabled={isDeleting}
+                onClick={() => handleDeletePreference(preference.id)}
+              >
+                Delete
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 }

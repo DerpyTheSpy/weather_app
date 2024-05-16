@@ -156,7 +156,7 @@ const App = ({ selectedCity }) => {
         </div>
       )}
       {data &&!loading && (
-        <>
+        <div className="weather-display-wrapper" style={{ position: 'elative' }}>
           <div className="animation-container">
             {animation === 'rain' && <RainAnimation />}
             {animation === 'now' && <SnowAnimation animation={animation} />}
@@ -167,10 +167,10 @@ const App = ({ selectedCity }) => {
             <option value="metric">Metric</option>
             <option value="imperial">Imperial</option>
           </select>
-        </>
+        </div>
       )}
     </div>
   );
-};
+}
 
 export default App;
