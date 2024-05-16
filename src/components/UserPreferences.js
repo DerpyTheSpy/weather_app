@@ -12,13 +12,13 @@ function UserPreferences() {
     .then(data => setPreferences(data));
   }, []);
 
-  const handleCreatePreference = async (id, newPreference) => {
+  const handleCreatePreference = async () => {
     try {
-      const response = await createUserPreference(id, newPreference);
+      const response = await createUserPreference(newPreference);
       setPreferences([...preferences, response]);
       setNewPreference({ units: '', location: '', notifications: false });
     } catch (error) {
-      console.error('Error creating preference:', error);
+      console.error('Error creating user preference:', error);
     }
   };
   const handleUpdatePreference = async (id, updatedPreference) => {

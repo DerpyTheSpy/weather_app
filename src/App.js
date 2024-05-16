@@ -49,6 +49,11 @@ const App = ({ selectedCity }) => {
   const [error, setError] = useState(null);
   const [animation, setAnimation] = useState(null);
   const [inputValue, setInputValue] = useState('');
+  const [preferences, setPreferences] = useState({ units: 'etric' });
+
+  const handleUnitChange = (unit) => {
+    setPreferences({ units: unit });
+  };
 
   useEffect(() => {
     document.body.style.transition = 'background-image 0.5s ease';
@@ -86,7 +91,6 @@ const App = ({ selectedCity }) => {
       console.log('Animation state:', animation);
     }
   }, [data, animation]);
-
   const handleSearch = async (location) => {
     setLoading(true);
     setAnimation(null); // reset animation state to null
@@ -155,10 +159,14 @@ const App = ({ selectedCity }) => {
         <>
           <div className="animation-container">
             {animation === 'rain' && <RainAnimation />}
-            {animation === 'snow' && <SnowAnimation animation={animation} />}
+            {animation === 'now' && <SnowAnimation animation={animation} />}
             {animation === 'thunderstorm' && <ThunderstormAnimation />}
           </div>
           <WeatherDisplay data={data} location={selectedCity} />
+          <select value={preferences.units} onChange={(event) => handleUnitChange(event.target.value)}>
+            <option value="metric">Metric</option>
+            <option value="imperial">Imperial</option>
+          </select>
         </>
       )}
     </div>
