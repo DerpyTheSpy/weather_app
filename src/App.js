@@ -4,6 +4,7 @@ import WeatherDisplay from './components/WeatherDisplay.js';
 import RainAnimation from './components/RainAnimation.js';
 import SnowAnimation from './components/SnowAnimation.js';
 import ThunderstormAnimation from './components/ThunderstormAnimation.js';
+import UserPreferences from './components/UserPreferences.js';
 import './App.css'
 
 const getBackgroundImage = (icon) => {
@@ -139,6 +140,7 @@ const App = ({ selectedCity }) => {
 
   return (
     <div className="App" style={{ backgroundSize: 'cover' }}>
+      <UserPreferences />
       <WeatherInput
         onSearch={handleSearch}
         error={error}
