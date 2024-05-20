@@ -1,11 +1,14 @@
 .App {
   position: relative;
   overflow: hidden;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .loading-container {
   position: fixed;
-  top: 25%; /* Adjusted to be 1/4 from the top */
+  top: 25%;
   left: 50%;
   transform: translate(-50%, -50%);
   background-color: rgba(255, 255, 255, 0.5);
@@ -29,22 +32,27 @@
   top: 0;
   left: 0;
   width: 100%;
-  height: 100vh; /* Set the height to 100vh */
+  height: 100%;
   z-index: 1;
 }
+
 .weather-display-wrapper {
   position: relative;
-  z-index: 10; /* increased z-index */
+  z-index: 10;
 }
+
 .animation-container {
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%; 
+  width: 100%;
+  height: 100%;
   z-index: 2;
 }
 
-.rain-animation,.snow-animation,.thunderstorm-animation {
+.rain-animation,
+.snow-animation,
+.thunderstorm-animation {
   position: absolute;
   top: 0;
   left: 0;
@@ -61,6 +69,5 @@
 }
 
 .weather-input-form {
-  margin-right: 10px; /* Add some space between the input and select */
+  margin-right: 10px;
 }
-

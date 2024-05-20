@@ -4,6 +4,7 @@ import { fetchUserPreferences, createUserPreference, updateUserPreference, delet
 
 function UserPreferences() {
   const [preferences, setPreferences] = useState([]);
+  const [selectedPreference, setSelectedPreference] = useState(null);
   const [newPreference, setNewPreference] = useState({ units: '', location: '', notifications: false });
   const [isUpdating, setIsUpdating] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -11,7 +12,7 @@ function UserPreferences() {
 
   useEffect(() => {
     fetchUserPreferences()
-    .then(data => setPreferences(data));
+      .then(data => setPreferences(data));
   }, []);
 
   const handleCreatePreference = async () => {
@@ -23,6 +24,7 @@ function UserPreferences() {
       console.error('Error creating user preference:', error);
     }
   };
+
   const handleUpdatePreference = async (id, updatedPreference) => {
     try {
       setIsUpdating(true);
@@ -35,7 +37,7 @@ function UserPreferences() {
       console.error('Error updating preference:', error);
     }
   };
-  
+
   const handleDeletePreference = async (id) => {
     try {
       setIsDeleting(true);
@@ -46,9 +48,14 @@ function UserPreferences() {
       console.error('Error deleting preference:', error);
     }
   };
-  
+
   const handleTogglePreferences = () => {
     setShowPreferences(!showPreferences);
+  };
+
+  const handleSelectPreference = (preference) => {
+    setSelectedPreference(preference);
+    setNewPreference({ units: preference.units, location: preference.location, notifications: preference.notifications });
   };
 
   return (
@@ -98,31 +105,38 @@ function UserPreferences() {
           </label>
           <br />
           <button type="submit">Create Preference</button>
+          {selectedPreference && (
+            <>
+              <button
+                disabled={isUpdating}
+                onClick={() => handleUpdatePreference(selectedPreference.id, newPreference)}
+              >
+                Update Preference
+              </button>
+              <button
+                disabled={isDeleting}
+                onClick={() => handleDeletePreference(selectedPreference.id)}
+              >
+                Delete Preference
+              </button>
+            </>
+          )}
         </form>
+        <select
+          value={selectedPreference?.id || ''}
+          onChange={(event) => handleSelectPreference(preferences.find(preference => preference.id === parseInt(event.target.value)))}
+        >
+          <option value="">Select a preference to update or delete</option>
+          {preferences.map((preference) => (
+            <option key={preference.id} value={preference.id}>{preference.id}</option>
+          ))}
+        </select>
         <ul>
           {preferences.map((preference) => (
             <li key={preference.id}>
               <p>Units: {preference.units}</p>
               <p>Location: {preference.location}</p>
               <p>Notifications: {preference.notifications? 'Yes' : 'No'}</p>
-              <button
-                disabled={isUpdating}
-                onClick={() =>
-                  handleUpdatePreference(preference.id, {
-                    units: 'Metric',
-                    location: 'New York',
-                    notifications: true,
-                  })
-                }
-              >
-                Update
-              </button>
-              <button
-                disabled={isDeleting}
-                onClick={() => handleDeletePreference(preference.id)}
-              >
-                Delete
-              </button>
             </li>
           ))}
         </ul>

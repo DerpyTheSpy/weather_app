@@ -86,7 +86,7 @@ const App = ({ selectedCity }) => {
           setAnimation('thunderstorm');
           break;
         default:
-          setAnimation(null);
+          setAnimation('snow');
       }
       console.log('Animation state:', animation);
     }
@@ -143,7 +143,6 @@ const App = ({ selectedCity }) => {
  
   return (
     <div className="App" style={{ backgroundSize: 'cover' }}>
-      <UserPreferences />
       <WeatherInput
         onSearch={handleSearch}
         error={error}
@@ -155,11 +154,11 @@ const App = ({ selectedCity }) => {
           <p className="loading-text">Loading...</p>
         </div>
       )}
-      {data &&!loading && (
-        <div className="weather-display-wrapper" style={{ position: 'elative' }}>
+      {data && !loading && (
+        <div className="weather-display-wrapper" style={{ position: 'relative' }}>
           <div className="animation-container">
             {animation === 'rain' && <RainAnimation />}
-            {animation === 'now' && <SnowAnimation animation={animation} />}
+            {animation === 'snow' && <SnowAnimation animation={animation} />}
             {animation === 'thunderstorm' && <ThunderstormAnimation />}
           </div>
           <WeatherDisplay data={data} location={selectedCity} />
@@ -169,6 +168,7 @@ const App = ({ selectedCity }) => {
           </select>
         </div>
       )}
+      <UserPreferences />
     </div>
   );
 }
