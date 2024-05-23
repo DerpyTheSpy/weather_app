@@ -86,19 +86,19 @@ const App = ({ selectedCity }) => {
           setAnimation('thunderstorm');
           break;
         default:
-          setAnimation('snow');
+          setAnimation(null);
       }
       console.log('Animation state:', animation);
     }
   }, [data, animation]);
-  const handleSearch = async (location) => {
+  const handleSearch = async (location, units) => {
     setLoading(true);
     setAnimation(null); // reset animation state to null
     try {
       const response = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=${preferences.units}&appid=85066c6de56d3de5fcc05b6934af3e9e`
+        `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=${units}&appid=85066c6de56d3de5fcc05b6934af3e9e`
       );
-  
+
       if (!response.ok) {
         if (response.status === 404) {
           setError('Error: City not found.');
@@ -112,7 +112,7 @@ const App = ({ selectedCity }) => {
         }, 500);
         return;
       }
-  
+
       const data = await response.json();
       console.log('Data state:', data);
       if (data && data.weather && data.weather.length > 0) {
@@ -122,9 +122,9 @@ const App = ({ selectedCity }) => {
         document.body.style.backgroundPosition = 'top center';
         document.body.style.backgroundRepeat = 'no-repeat';
         document.body.style.height = '100vh';
-        document.body.style.margin = '0';
+document.body.style.margin = '0';
         document.body.style.padding = '0';
-      } else {
+     } else {
         setError('Error: Unknown input.');
         window.alert(error); // display an alert box with the error message
         setInputValue('');
@@ -140,7 +140,23 @@ const App = ({ selectedCity }) => {
       }, 500);
     }
   };
- 
+
+  const getConvertedTemperature = () => {
+    if (data && data.main) {
+      switch (preferences.units) {
+        case 'metric':
+          return Math.round(data.main.temp - 273.15);
+        case 'imperial':
+          return Math.round(
+            (data.main.temp - 273.15) * 1.8 + 32
+          );
+        default:
+          return Math.round(data.main.temp - 273.15);
+      }
+    }
+    return null;
+  };
+
   return (
     <div className="App" style={{ backgroundSize: 'cover' }}>
       <WeatherInput
@@ -161,11 +177,7 @@ const App = ({ selectedCity }) => {
             {animation === 'snow' && <SnowAnimation animation={animation} />}
             {animation === 'thunderstorm' && <ThunderstormAnimation />}
           </div>
-          <WeatherDisplay data={data} location={selectedCity} />
-          <select value={preferences.units} onChange={(event) => handleUnitChange(event.target.value)}>
-            <option value="metric">Metric</option>
-            <option value="imperial">Imperial</option>
-          </select>
+          <WeatherDisplay data={data} temperature={getConvertedTemperature()} units={preferences.units} onUnitChange={handleUnitChange} />
         </div>
       )}
       <UserPreferences />
