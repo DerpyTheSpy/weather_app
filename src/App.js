@@ -140,6 +140,9 @@ document.body.style.margin = '0';
       }, 500);
     }
   };
+  const handleLocationUpdate = (location) => {
+    handleSearch(location, preferences.units);
+  };
 
   const getConvertedTemperature = () => {
     if (data && data.main) {
@@ -180,7 +183,7 @@ document.body.style.margin = '0';
           <WeatherDisplay data={data} temperature={getConvertedTemperature()} units={preferences.units} onUnitChange={handleUnitChange} />
         </div>
       )}
-      <UserPreferences />
+      <UserPreferences onLocationUpdate={handleLocationUpdate} />
     </div>
   );
 }
