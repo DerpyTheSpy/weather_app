@@ -4,6 +4,22 @@ import './WeatherDisplay.css';
 const WeatherDisplay = ({ data, temperature, units, onUnitChange }) => {
   const icon = `http://openweathermap.org/img/wn/${data?.weather[0]?.icon}@2x.png`;
 
+  const getFeelsLikeTemperature = () => {
+    if (data && data.main) {
+      switch (units) {
+        case 'metric':
+          return Math.round(data.main.feels_like - 273.15);
+        case 'imperial':
+          return Math.round(
+            (data.main.feels_like - 273.15) * 1.8 + 32
+          );
+        default:
+          return Math.round(data.main.feels_like - 273.15);
+      }
+    }
+    return null;
+  };
+
   return (
     <div className="weather-output">
       {data && data.name? (
@@ -15,7 +31,7 @@ const WeatherDisplay = ({ data, temperature, units, onUnitChange }) => {
           <div className="weather-details">
             <div className="detail">
               <label>Current Temp:</label>
-              <span>{temperature} {units === 'metric' ? '°C' : '°F'}</span>
+              <span>{temperature} {units === 'metric'? '°C' : '°F'}</span>
             </div>
             <div className="detail">
               <label>Sky Conditions:</label>
@@ -27,7 +43,7 @@ const WeatherDisplay = ({ data, temperature, units, onUnitChange }) => {
             </div>
             <div className="detail">
               <label>Feels Like:</label>
-              <span>{data.main.feels_like} {units === 'metric' ? '°C' : '°F'}</span>
+              <span>{getFeelsLikeTemperature()} {units === 'metric'? '°C' : '°F'}</span>
             </div>
             <div className="detail">
               <label>Wind:</label>

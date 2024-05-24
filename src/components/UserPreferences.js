@@ -17,7 +17,7 @@ function UserPreferences() {
 
   const handleCreatePreference = async () => {
     try {
-      const response = await createUserPreference(newPreference);
+      const response = await createUserPreference({...newPreference, units: preferences.units });
       setPreferences([...preferences, response]);
       setNewPreference({ units: '', location: '', notifications: false });
     } catch (error) {
@@ -30,7 +30,7 @@ function UserPreferences() {
       setIsUpdating(true);
       const response = await updateUserPreference(id, updatedPreference);
       setPreferences(
-        preferences.map((preference) => (preference.id === id? response : preference))
+        preferences.map((preference) =>(preference.id === id? response : preference))
       );
       setIsUpdating(false);
     } catch (error) {
@@ -69,41 +69,64 @@ function UserPreferences() {
             handleCreatePreference();
           }}
         >
-          <label>
-            Units:
-            <select
-              value={newPreference.units}
-              onChange={(event) =>
-                setNewPreference({...newPreference, units: event.target.value })
-              }
-            >
-              <option value="metric">Metric</option>
-              <option value="imperial">Imperial</option>
-            </select>
-          </label>
+          <select
+            value={selectedPreference?.id || ''}
+            onChange={(event) => handleSelectPreference(preferences.find(preference => preference.id === parseInt(event.target.value)))}
+          >
+            <option value="">Select a preference to update or delete</option>
+            {preferences.map((preference) => (
+              <option key={preference.id} value={preference.id}>{preference.id}</option>
+            ))}
+          </select>
           <br />
-          <label>
-            Location:
+          <div className="form-group">
+            <label style={{ marginRight: '10px' }}>Units:</label>
+              <select
+                value={newPreference.units}
+                onChange={(event) =>
+                  setNewPreference({...newPreference, units: event.target.value })
+                }
+                style={{ width: '150px', height: '40px', padding: '10px', border: '1px solid #ccc', borderRadius: '5px' }}
+              >
+                <option value="metric">Metric</option>
+                <option value="imperial">Imperial</option>
+              </select>
+          </div>
+          <div className="form-group">
+            <label style={{ display: 'inline-block', width: '40px' }}>Location:</label>
             <input
               type="text"
               value={newPreference.location}
               onChange={(event) =>
                 setNewPreference({...newPreference, location: event.target.value })
               }
+              style={{ display: 'inline-block', width: '150px' }}
             />
-          </label>
-          <br />
-          <label>
-            Notifications:
+          </div>
+          <div className="form-group">
+            <label style={{ display: 'inline-block', width: '40px' }}>Notifications:</label>
             <input
               type="checkbox"
               checked={newPreference.notifications}
               onChange={(event) =>
                 setNewPreference({...newPreference, notifications: event.target.checked })
               }
+              style={{ display: 'inline-block' }}
             />
-          </label>
-          <br />
+          </div>
+          <ul>
+            {preferences.map((preference) => (
+              <li key={preference.id}>
+                <label>Units:</label>
+                <select value={preference.units}>
+                  <option value="metric">Metric</option>
+                  <option value="imperial">Imperial</option>
+                </select>
+                <p>Location: {preference.location}</p>
+                <p>Notifications: {preference.notifications? 'Yes' : 'No'}</p>
+              </li>
+            ))}
+          </ul>
           <button type="submit">Create Preference</button>
           {selectedPreference && (
             <>
@@ -122,27 +145,9 @@ function UserPreferences() {
             </>
           )}
         </form>
-        <select
-          value={selectedPreference?.id || ''}
-          onChange={(event) => handleSelectPreference(preferences.find(preference => preference.id === parseInt(event.target.value)))}
-        >
-          <option value="">Select a preference to update or delete</option>
-          {preferences.map((preference) => (
-            <option key={preference.id} value={preference.id}>{preference.id}</option>
-          ))}
-        </select>
-        <ul>
-          {preferences.map((preference) => (
-            <li key={preference.id}>
-              <p>Units: {preference.units}</p>
-              <p>Location: {preference.location}</p>
-              <p>Notifications: {preference.notifications? 'Yes' : 'No'}</p>
-            </li>
-          ))}
-        </ul>
       </div>
     </div>
   );
-}
+};
 
 export default UserPreferences;
