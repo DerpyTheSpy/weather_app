@@ -16,17 +16,35 @@ body {
   display: none;
   position: absolute;
   top: 26%;
-  left: 30%;
+  right: 51%; 
   transform: translateX(-50%);
   background-color: #fff;
   padding: 20px;
   border: 1px solid #ddd;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  width: 500px;
+  width: calc(50% - 20px); /* changed from width: 50% to calc(50% - 20px) */
+  max-width: 500px; 
   z-index: 10; /* add this */
 }
 
+@media (max-width: 1200px) {
+  .user-preferences-container {
+    width: calc(40% - 20px);
+  }
+}
+
+@media (max-width: 900px) {
+  .user-preferences-container {
+    width: calc(30% - 20px);
+  }
+}
+
+@media (max-width: 600px) {
+  .user-preferences-container {
+    width: calc(20% - 20px);
+  }
+}
 .user-preferences-container.show {
   display: flex;
   flex-direction: column;

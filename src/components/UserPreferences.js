@@ -49,6 +49,7 @@ function UserPreferences({ onLocationUpdate }) {
       setIsUpdating(true);
       const updatedPreferenceData = { ...updatedPreference, id: selectedPreference.id };
       setPreferences(preferences.map(preference => preference.id === selectedPreference.id ? updatedPreferenceData : preference));
+      setSelectedPreference(updatedPreferenceData); // Update selectedPreference with new values
       setIsUpdating(false);
     } catch (error) {
       console.error('Error updating preference:', error);
