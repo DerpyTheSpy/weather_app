@@ -1,23 +1,42 @@
 import React, { useState, useEffect } from 'react';
 import './UserPreferences.css';
-import { fetchUserPreferences, createUserPreference, updateUserPreference, deleteUserPreference } from '../api';
+
+const fakeDatabase = {
+  "userPreferences": [
+    {
+      "id": 1,
+      "units": "metric",
+      "location": "New York",
+      "notifications": true
+    },
+    {
+      "id": 2,
+      "units": "imperial",
+      "location": "Los Angeles",
+      "notifications": false
+    },
+    {
+      "id": 3,
+      "units": "metric",
+      "location": "Chicago",
+      "notifications": true
+    }
+  ]
+};
 
 function UserPreferences() {
-  const [preferences, setPreferences] = useState([]);
+  const [preferences, setPreferences] = useState(fakeDatabase.userPreferences);
   const [newPreference, setNewPreference] = useState({ units: '', location: '', notifications: false });
   const [selectedPreference, setSelectedPreference] = useState(null);
   const [isUpdating, setIsUpdating] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [showPreferences, setShowPreferences] = useState(false);
 
-  useEffect(() => {
-    fetchUserPreferences().then(data => setPreferences(data));
-  }, []);
-
   const handleCreatePreference = async () => {
     try {
-      const response = await createUserPreference(newPreference);
-      setPreferences([...preferences, response]);
+      const newId = Math.max(...preferences.map(p => p.id)) + 1;
+      const newPreferenceData = { ...newPreference, id: newId };
+      setPreferences([...preferences, newPreferenceData]);
       setNewPreference({ units: '', location: '', notifications: false });
     } catch (error) {
       console.error('Error creating user preference:', error);
@@ -27,8 +46,8 @@ function UserPreferences() {
   const handleUpdatePreference = async () => {
     try {
       setIsUpdating(true);
-      const response = await updateUserPreference(selectedPreference.id, newPreference);
-      setPreferences(preferences.map(preference => preference.id === selectedPreference.id ? response : preference));
+      const updatedPreference = { ...newPreference, id: selectedPreference.id };
+      setPreferences(preferences.map(preference => preference.id === selectedPreference.id ? updatedPreference : preference));
       setIsUpdating(false);
     } catch (error) {
       console.error('Error updating preference:', error);
@@ -38,7 +57,6 @@ function UserPreferences() {
   const handleDeletePreference = async () => {
     try {
       setIsDeleting(true);
-      await deleteUserPreference(selectedPreference.id);
       setPreferences(preferences.filter(preference => preference.id !== selectedPreference.id));
       setIsDeleting(false);
     } catch (error) {
@@ -82,20 +100,21 @@ function UserPreferences() {
             <input type="checkbox" checked={newPreference.notifications} onChange={(event) => setNewPreference({ ...newPreference, notifications: event.target.checked })} />
           </div>
 
+          <button type="submit" className="create-button">Create Preference</button>
+
+          {selectedPreference && (
+            <div>
+              <button disabled={isUpdating} onClick={handleUpdatePreference} className="update-button">Update Preference</button>
+              <button disabled={isDeleting} onClick={handleDeletePreference} className="delete-button">Delete Preference</button>
+            </div>
+          )}
+
           <select value={selectedPreference?.id || ''} onChange={(event) => handleSelectPreference(preferences.find(preference => preference.id === parseInt(event.target.value)))}>
             <option value="">Select preference</option>
             {preferences.map((preference) => (
               <option key={preference.id} value={preference.id}>{preference.id}</option>
             ))}
           </select>
-
-          <button type="submit">Create Preference</button>
-          {selectedPreference && (
-            <>
-              <button disabled={isUpdating} onClick={handleUpdatePreference}>Update Preference</button>
-              <button disabled={isDeleting} onClick={handleDeletePreference}>Delete Preference</button>
-            </>
-          )}
         </form>
       </div>
     </div>

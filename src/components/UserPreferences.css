@@ -12,27 +12,27 @@ body {
   background-color: #f9f9f9;
 }
 
-/* Hide the user preferences container by default */
 .user-preferences-container {
   display: none;
   position: absolute;
-  margin-top: 350px;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  top: 26%;
+  left: 30%;
+  transform: translateX(-50%);
   background-color: #fff;
   padding: 20px;
   border: 1px solid #ddd;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   width: 500px;
+  z-index: 10; /* add this */
 }
 
-/* Show the user preferences container when the button is clicked */
 .user-preferences-container.show {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
-
 /* Toggle Preferences button */
 .toggle-preferences-button {
   position: fixed;
@@ -45,7 +45,7 @@ body {
   border-radius: 5px;
   cursor: pointer;
   font-size: 16px;
-  z-index: 1; /* add this to ensure the button is on top of other elements */
+  z-index: 10; /* add this to ensure the button is on top of other elements */
 }
 
 .toggle-preferences-button:hover {
@@ -146,7 +146,7 @@ body {
 
 .form-group label {
   width: 100px;
-  text-align: right;
+  text-align: left;
   margin-right: 10px;
 }
 
@@ -201,15 +201,68 @@ button[type="submit"]:hover {
 }
 
 .preferences-list button {
+  cursor: pointer;
   background-color: #337ab7;
-  color: #fff;
-  padding: 10px 20px;
   border: none;
   border-radius: 5px;
-  cursor: pointer;
+  color: #fff;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
   font-size: 16px;
+  margin: 4px 2px;
+  transition-duration: 0.4s;
 }
 
 .preferences-list button:hover {
-  background-color: #23527c;
+  background-color: white;
+  color: #23527c;
 }
+.button-group {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.create-button,
+.update-button,
+.delete-button {
+  cursor: pointer;
+  background-color: #337ab7;
+  border: none;
+  border-radius: 5px;
+  color: #fff;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  transition-duration: 0.4s;
+}
+
+.create-button {
+  margin-right: 20px;
+}
+
+.create-button:hover,
+.update-button:hover,
+.delete-button:hover {
+  background-color: white;
+  color: #23527c;
+}
+
+.user-preferences-container {
+  display: none;
+  width: 300px;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+.user-preferences-container.show {
+  display: block;
+}
+
