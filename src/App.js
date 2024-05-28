@@ -7,12 +7,6 @@ import ThunderstormAnimation from './components/ThunderstormAnimation.js';
 import UserPreferences from './components/UserPreferences.js';
 import './App.css'
 
-/**
- * getBackgroundImage function that returns the background image URL based on the weather icon.
- *
- * @param {string} icon - The weather icon.
- * @returns {string} The background image URL.
- */
 const getBackgroundImage = (icon) => {
   switch (icon) {
     case '01d':
@@ -49,13 +43,7 @@ const getBackgroundImage = (icon) => {
   }
 };
 
-/**
- * App component that handles the weather search and display.
- *
- * @param {string} selectedCity - The selected city.
- */
 const App = ({ selectedCity }) => {
-  // State variables to store the weather data, loading state, error message, animation state, input value, and user preferences
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -63,16 +51,10 @@ const App = ({ selectedCity }) => {
   const [inputValue, setInputValue] = useState('');
   const [preferences, setPreferences] = useState({ units: 'etric' });
 
-  /**
-   * handleUnitChange function that updates the user preferences when the unit changes.
-   *
-   * @param {string} unit - The new unit.
-   */
   const handleUnitChange = (unit) => {
     setPreferences({ units: unit });
   };
 
-  // useEffect hook to set the default background image and styles
   useEffect(() => {
     document.body.style.transition = 'background-image 0.5s ease';
     document.body.style.backgroundImage = `url(${require('./components/Images/default.jpg')})`;
@@ -84,14 +66,12 @@ const App = ({ selectedCity }) => {
     document.body.style.padding = '0';
   }, []);
 
-  // useEffect hook to handle the selected city
   useEffect(() => {
     if (selectedCity) {
       handleSearch(selectedCity);
     }
   }, [selectedCity]);
 
-  // useEffect hook to update the animation state based on the weather data
   useEffect(() => {
     if (data && data.weather && data.weather.length > 0) {
       const weather = data?.weather[0]?.id;
@@ -111,13 +91,6 @@ const App = ({ selectedCity }) => {
       console.log('Animation state:', animation);
     }
   }, [data, animation]);
-
-  /**
-   * handleSearch function that handles the weather search.
-   *
-   * @param {string} location - The location to search for.
-   * @param {string} units - The units to use.
-   */
   const handleSearch = async (location, units) => {
     setLoading(true);
     setAnimation(null); // reset animation state to null
@@ -126,7 +99,7 @@ const App = ({ selectedCity }) => {
         `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=${units}&appid=85066c6de56d3de5fcc05b6934af3e9e`
       );
 
-if (!response.ok) {
+      if (!response.ok) {
         if (response.status === 404) {
           setError('Error: City not found.');
         } else {
@@ -167,21 +140,10 @@ document.body.style.margin = '0';
       }, 500);
     }
   };
-
-  /**
-   * handleLocationUpdate function that updates the location when the user updates their location.
-   *
-   * @param {string} location - The new location.
-   */
   const handleLocationUpdate = (location) => {
     handleSearch(location, preferences.units);
   };
 
-  /**
-   * getConvertedTemperature function that returns the converted temperature based on the user preferences.
-   *
-   * @returns {number|null} The converted temperature.
-   */
   const getConvertedTemperature = () => {
     if (data && data.main) {
       switch (preferences.units) {
@@ -198,7 +160,6 @@ document.body.style.margin = '0';
     return null;
   };
 
-  // Render the App component
   return (
     <div className="App" style={{ backgroundSize: 'cover' }}>
       <WeatherInput
