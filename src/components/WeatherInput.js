@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './WeatherInput.css';
-import UserPreferences from './UserPreferences';
+
 
 const WeatherInput = ({ onSearch, onLocationUpdate }) => {
   const [location, setLocation] = useState('');

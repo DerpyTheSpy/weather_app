@@ -66,11 +66,7 @@ const App = ({ selectedCity }) => {
     document.body.style.padding = '0';
   }, []);
 
-  useEffect(() => {
-    if (selectedCity) {
-      handleSearch(selectedCity);
-    }
-  }, [selectedCity]);
+
 
   useEffect(() => {
     if (data && data.weather && data.weather.length > 0) {
@@ -143,7 +139,11 @@ document.body.style.margin = '0';
   const handleLocationUpdate = (location) => {
     handleSearch(location, preferences.units);
   };
-
+  useEffect(() => {
+    if (selectedCity) {
+      handleSearch(selectedCity);
+    }
+  }, [selectedCity]);
   const getConvertedTemperature = () => {
     if (data && data.main) {
       switch (preferences.units) {
