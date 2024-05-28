@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'eact';
+import React, { useState, useEffect } from 'react';
 import './WeatherInput.css';
 import UserPreferences from './UserPreferences';
 

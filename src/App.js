@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'eact';
+import React, { useState, useEffect } from 'react';
 import WeatherInput from './components/WeatherInput.js';
 import WeatherDisplay from './components/WeatherDisplay.js';
 import RainAnimation from './components/RainAnimation.js';
