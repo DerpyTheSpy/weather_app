@@ -1,5 +1,3 @@
-
-
 export async function fetchUserPreferences() {
   try {
     const response = await fetch('http://localhost:3000/weather_app/userPreferences');

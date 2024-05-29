@@ -1,31 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './UserPreferences.css';
-
-const fakeDatabase = {
-  "userPreferences": [
-    {
-      "id": 1,
-      "units": "metric",
-      "location": "New York",
-      "notifications": true
-    },
-    {
-      "id": 2,
-      "units": "imperial",
-      "location": "Los Angeles",
-      "notifications": false
-    },
-    {
-      "id": 3,
-      "units": "metric",
-      "location": "Chicago",
-      "notifications": true
-    }
-  ]
-};
+import { fetchUserPreferences, createUserPreference, updateUserPreference, deleteUserPreference } from '../api.js';
 
 function UserPreferences({ onLocationUpdate }) {
-  const [preferences, setPreferences] = useState(fakeDatabase.userPreferences);
+  const [preferences, setPreferences] = useState([]);
   const [newPreference, setNewPreference] = useState({ units: '', location: '', notifications: false });
   const [updatedPreference, setUpdatedPreference] = useState(null);
   const [selectedPreference, setSelectedPreference] = useState(null);
@@ -33,10 +11,21 @@ function UserPreferences({ onLocationUpdate }) {
   const [isDeleting, setIsDeleting] = useState(false);
   const [showPreferences, setShowPreferences] = useState(false);
 
-  const handleCreatePreference = async () => {
+  useEffect(() => {
+    const fetchPreferences = async () => {
+      try {
+        const preferencesData = await fetchUserPreferences();
+        setPreferences(preferencesData);
+      } catch (error) {
+        console.error('Error fetching user preferences:', error);
+      }
+    };
+    fetchPreferences();
+  }, []);
+
+  const handleCreatePreference = async (newPreference) => {
     try {
-      const newId = Math.max(...preferences.map(p => p.id)) + 1;
-      const newPreferenceData = { ...newPreference, id: newId };
+      const newPreferenceData = await createUserPreference(newPreference);
       setPreferences([...preferences, newPreferenceData]);
       setNewPreference({ units: '', location: '', notifications: false });
     } catch (error) {
@@ -44,11 +33,11 @@ function UserPreferences({ onLocationUpdate }) {
     }
   };
 
-  const handleUpdatePreference = async () => {
+  const handleUpdatePreference = async (id, updatedPreference) => {
     try {
       setIsUpdating(true);
-      const updatedPreferenceData = { ...updatedPreference, id: selectedPreference.id };
-      setPreferences(preferences.map(preference => preference.id === selectedPreference.id ? updatedPreferenceData : preference));
+      const updatedPreferenceData = await updateUserPreference(id, updatedPreference);
+      setPreferences(preferences.map(preference => preference.id === id ? updatedPreferenceData : preference));
       setSelectedPreference(updatedPreferenceData); // Update selectedPreference with new values
       setIsUpdating(false);
     } catch (error) {
@@ -56,10 +45,11 @@ function UserPreferences({ onLocationUpdate }) {
     }
   };
 
-  const handleDeletePreference = async () => {
+  const handleDeletePreference = async (id) => {
     try {
       setIsDeleting(true);
-      setPreferences(preferences.filter(preference => preference.id !== selectedPreference.id));
+      await deleteUserPreference(id);
+      setPreferences(preferences.filter(preference => preference.id !== id));
       setSelectedPreference(null);
       setNewPreference({ units: '', location: '', notifications: false }); // Reset new preference state
       setIsDeleting(false);
@@ -97,11 +87,11 @@ function UserPreferences({ onLocationUpdate }) {
         <h2>User Preferences</h2>
         <form onSubmit={(event) => {
           event.preventDefault();
-          handleCreatePreference();
+          handleCreatePreference(newPreference);
         }}>
           <div className="form-group">
             <label>Units:</label>
-            <select value={newPreference.units} onChange={(event) => setNewPreference({ ...newPreference, units: event.target.value })}>
+            <select value={newPreference.units} onChange={(event) => setNewPreference({...newPreference, units: event.target.value })}>
               <option value="metric">Metric</option>
               <option value="imperial">Imperial</option>
             </select>
@@ -109,12 +99,12 @@ function UserPreferences({ onLocationUpdate }) {
         
           <div className="form-group">
             <label>Location:</label>
-            <input type="text" value={newPreference.location} onChange={(event) => setNewPreference({ ...newPreference, location: event.target.value })} />
+            <input type="text" value={newPreference.location} onChange={(event) => setNewPreference({...newPreference, location: event.target.value })} />
           </div>
         
           <div className="form-group">
             <label>Notifications:</label>
-            <input type="checkbox" checked={newPreference.notifications} onChange={(event) => setNewPreference({ ...newPreference, notifications: event.target.checked })} />
+            <input type="checkbox" checked={newPreference.notifications} onChange={(event) => setNewPreference({...newPreference, notifications: event.target.checked })} />
           </div>
 
           <button type="submit" className="create-button">Create Preference</button>
@@ -123,24 +113,24 @@ function UserPreferences({ onLocationUpdate }) {
             <div>
               <div className="form-group">
                 <label>Units:</label>
-                <select value={updatedPreference?.units || selectedPreference.units} onChange={(event) => setUpdatedPreference({ ...updatedPreference, units: event.target.value })}>
+                <select value={updatedPreference?.units || selectedPreference.units} onChange={(event) => setUpdatedPreference({...updatedPreference, units: event.target.value })}>
                   <option value="metric">Metric</option>
                   <option value="imperial">Imperial</option>
                 </select>
               </div>
 
-              <div className="form-group">
+             <div className="form-group">
                 <label>Location:</label>
-                <input type="text" value={updatedPreference?.location || selectedPreference.location} onChange={(event) => setUpdatedPreference({ ...updatedPreference, location: event.target.value })} />
+                <input type="text" value={updatedPreference?.location || selectedPreference.location} onChange={(event) => setUpdatedPreference({...updatedPreference, location: event.target.value })} />
               </div>
 
               <div className="form-group">
                 <label>Notifications:</label>
-                <input type="checkbox" checked={updatedPreference?.notifications || selectedPreference.notifications} onChange={(event) => setUpdatedPreference({ ...updatedPreference, notifications: event.target.checked })} />
+                <input type="checkbox" checked={updatedPreference?.notifications || selectedPreference.notifications} onChange={(event) => setUpdatedPreference({...updatedPreference, notifications: event.target.checked })} />
               </div>
 
-              <button type="button" onClick={handleUpdatePreference} className="update-button">Update Preference</button>
-              <button type="button" onClick={handleDeletePreference} className="delete-button">Delete Preference</button>
+              <button type="button" onClick={() => handleUpdatePreference(selectedPreference.id, updatedPreference)} className="update-button">Update Preference</button>
+              <button type="button" onClick={() => handleDeletePreference(selectedPreference.id)} className="delete-button">Delete Preference</button>
               <button type="button" onClick={handleApplyPreference} className="apply-button">Apply Preference</button>
             </div>
           )}
