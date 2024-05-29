@@ -4,6 +4,7 @@ import WeatherDisplay from './components/WeatherDisplay.js';
 import RainAnimation from './components/RainAnimation.js';
 import SnowAnimation from './components/SnowAnimation.js';
 import ThunderstormAnimation from './components/ThunderstormAnimation.js';
+import UserPreferences from './components/UserPreferences.js';
 import './App.css'
 
 const getBackgroundImage = (icon) => {
@@ -42,13 +43,17 @@ const getBackgroundImage = (icon) => {
   }
 };
 
-const App = () => {
+const App = ({ selectedCity }) => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [animation, setAnimation] = useState(null);
-  const [showAlert, setShowAlert] = useState(false);
   const [inputValue, setInputValue] = useState('');
+  const [preferences, setPreferences] = useState({ units: 'etric' });
+
+  const handleUnitChange = (unit) => {
+    setPreferences({ units: unit });
+  };
 
   useEffect(() => {
     document.body.style.transition = 'background-image 0.5s ease';
@@ -61,14 +66,51 @@ const App = () => {
     document.body.style.padding = '0';
   }, []);
 
-  const handleSearch = async (location) => {
+
+
+  useEffect(() => {
+    if (data && data.weather && data.weather.length > 0) {
+      const weather = data?.weather[0]?.id;
+      switch (true) {
+        case weather >= 500 && weather <= 531:
+          setAnimation('rain');
+          break;
+        case weather >= 600 && weather <= 622:
+          setAnimation('snow');
+          break;
+        case weather >= 200 && weather <= 232:
+          setAnimation('thunderstorm');
+          break;
+        default:
+          setAnimation(null);
+      }
+      console.log('Animation state:', animation);
+    }
+  }, [data, animation]);
+  const handleSearch = async (location, units) => {
     setLoading(true);
+    setAnimation(null); // reset animation state to null
     try {
       const response = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=metric&appid=85066c6de56d3de5fcc05b6934af3e9e`
+        `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=${units}&appid=85066c6de56d3de5fcc05b6934af3e9e`
       );
 
+      if (!response.ok) {
+        if (response.status === 404) {
+          setError('Error: City not found.');
+        } else {
+          setError('Error: An unexpected error occurred.');
+        }
+        window.alert(error); // display an alert box with the error message
+        setInputValue('');
+        setTimeout(() => {
+          setLoading(false); // set loading to false after half a second
+        }, 500);
+        return;
+      }
+
       const data = await response.json();
+      console.log('Data state:', data);
       if (data && data.weather && data.weather.length > 0) {
         setData(data);
         document.body.style.backgroundImage = `url(${getBackgroundImage(data?.weather[0]?.icon)})`;
@@ -76,66 +118,48 @@ const App = () => {
         document.body.style.backgroundPosition = 'top center';
         document.body.style.backgroundRepeat = 'no-repeat';
         document.body.style.height = '100vh';
-        document.body.style.margin = '0';
+document.body.style.margin = '0';
         document.body.style.padding = '0';
-        setAnimation(null);
-
-        const weather = data?.weather[0]?.id;
-        switch (weather) {
-          case '500':
-          case '501':
-          case '502':
-          case '503':
-          case '504':
-          case '511':
-          case '520':
-          case '521':
-          case '522':
-          case '531':
-            setAnimation('rain');
-            break;
-          case '600':
-          case '601':
-          case '602':
-          case '611':
-          case '612':
-          case '615':
-          case '616':
-          case '620':
-          case '621':
-          case '622':
-            setAnimation('snow');
-            break;
-          case '200':
-          case '201':
-          case '202':
-          case '210':
-          case '211':
-          case '212':
-          case '221':
-          case '230':
-          case '231':
-          case '232':
-            setAnimation('thunderstorm');
-            break;
-          default:
-            setAnimation(null);
-        }
-      } else {
-        setError('Error, unknown input.');
+     } else {
+        setError('Error: Unknown input.');
+        window.alert(error); // display an alert box with the error message
         setInputValue('');
       }
     } catch (error) {
       console.error('Error fetching data:', error);
-      setError('Error, unknown input.');
+      setError('Error: An unexpected error occurred.');
+      window.alert(error); // display an alert box with the error message
       setInputValue('');
     } finally {
       setTimeout(() => {
-        setLoading(false);
-      }, 2000);
+        setLoading(false); // set loading to false after half a second
+      }, 500);
     }
   };
-  
+  const handleLocationUpdate = (location) => {
+    handleSearch(location, preferences.units);
+  };
+  useEffect(() => {
+    if (selectedCity) {
+      handleSearch(selectedCity);
+    }
+  }, [selectedCity]);
+  const getConvertedTemperature = () => {
+    if (data && data.main) {
+      switch (preferences.units) {
+        case 'metric':
+          return Math.round(data.main.temp - 273.15);
+        case 'imperial':
+          return Math.round(
+            (data.main.temp - 273.15) * 1.8 + 32
+          );
+        default:
+          return Math.round(data.main.temp - 273.15);
+      }
+    }
+    return null;
+  };
+
   return (
     <div className="App" style={{ backgroundSize: 'cover' }}>
       <WeatherInput
@@ -149,20 +173,19 @@ const App = () => {
           <p className="loading-text">Loading...</p>
         </div>
       )}
-      {data &&!loading && (
-        <>
-          <WeatherDisplay data={data} location={data.name} />
-          {animation && (
-            <div className="animation-container">
-              {animation === 'rain' && <RainAnimation />}
-              {animation === 'snow' && <SnowAnimation />}
-              {animation === 'thunderstorm' && <ThunderstormAnimation />}
-            </div>
-          )}
-        </>
+      {data && !loading && (
+        <div className="weather-display-wrapper" style={{ position: 'relative' }}>
+          <div className="animation-container">
+            {animation === 'rain' && <RainAnimation />}
+            {animation === 'snow' && <SnowAnimation animation={animation} />}
+            {animation === 'thunderstorm' && <ThunderstormAnimation />}
+          </div>
+          <WeatherDisplay data={data} temperature={getConvertedTemperature()} units={preferences.units} onUnitChange={handleUnitChange} />
+        </div>
       )}
+      <UserPreferences onLocationUpdate={handleLocationUpdate} />
     </div>
   );
-};
+}
 
 export default App;

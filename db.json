@@ -1,0 +1,22 @@
+{
+  "userPreferences": [
+    {
+      "id": 1,
+      "units": "metric",
+      "location": "New York",
+      "notifications": true
+    },
+    {
+      "id": 2,
+      "units": "imperial",
+      "location": "Los Angeles",
+      "notifications": false
+    },
+    {
+      "id": 3,
+      "units": "metric",
+      "location": "Chicago",
+      "notifications": true
+    }
+  ]
+}

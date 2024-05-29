@@ -1,8 +1,24 @@
 import React from 'react';
 import './WeatherDisplay.css';
 
-const WeatherDisplay = ({ data }) => {
+const WeatherDisplay = ({ data, temperature, units, onUnitChange }) => {
   const icon = `http://openweathermap.org/img/wn/${data?.weather[0]?.icon}@2x.png`;
+
+  const getFeelsLikeTemperature = () => {
+    if (data && data.main) {
+      switch (units) {
+        case 'metric':
+          return Math.round(data.main.feels_like - 273.15);
+        case 'imperial':
+          return Math.round(
+            (data.main.feels_like - 273.15) * 1.8 + 32
+          );
+        default:
+          return Math.round(data.main.feels_like - 273.15);
+      }
+    }
+    return null;
+  };
 
   return (
     <div className="weather-output">
@@ -15,7 +31,7 @@ const WeatherDisplay = ({ data }) => {
           <div className="weather-details">
             <div className="detail">
               <label>Current Temp:</label>
-              <span>{data.main.temp}°C</span>
+              <span>{temperature} {units === 'metric'? '°C' : '°F'}</span>
             </div>
             <div className="detail">
               <label>Sky Conditions:</label>
@@ -27,7 +43,7 @@ const WeatherDisplay = ({ data }) => {
             </div>
             <div className="detail">
               <label>Feels Like:</label>
-              <span>{data.main.feels_like}°C</span>
+              <span>{getFeelsLikeTemperature()} {units === 'metric'? '°C' : '°F'}</span>
             </div>
             <div className="detail">
               <label>Wind:</label>
@@ -44,6 +60,13 @@ const WeatherDisplay = ({ data }) => {
             <div className="detail">
               <label>Visibility:</label>
               <span>{data.visibility / 1000} km</span>
+            </div>
+            <div className="detail">
+              <label>Units:</label>
+              <select value={units} onChange={(event) => onUnitChange(event.target.value)}>
+                <option value="metric">Metric</option>
+                <option value="imperial">Imperial</option>
+              </select>
             </div>
           </div>
         </>

@@ -1,9 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './WeatherInput.css';
 
 
-const WeatherInput = ({ onSearch }) => {
+const WeatherInput = ({ onSearch, onLocationUpdate }) => {
   const [location, setLocation] = useState('');
+
+  useEffect(() => {
+    if (onLocationUpdate) {
+      onLocationUpdate(location);
+    }
+  }, [location, onLocationUpdate]);
 
   const handleSearch = (e) => {
     e.preventDefault();

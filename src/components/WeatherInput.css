@@ -9,6 +9,7 @@
 .weather-input-container {
   display: flex;
   align-items: center;
+  z-index: 1;
 }
 
 .weather-input {
