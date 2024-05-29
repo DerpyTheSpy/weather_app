@@ -1,0 +1,66 @@
+.rain-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.rain {
+  position: absolute;
+  top: var(--random-top, -100%);
+  left: var(--random-left, -50%);
+  width: 2px;
+  height: 100px;
+  background: linear-gradient(to top, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0) 100%);
+  --animation-delay: 0s; /* Set the default animation delay to 0s */
+  animation: rain var(--animation-duration, 4s) linear infinite var(--animation-delay, 0s);
+  transform: rotate(20deg) translateX(25%) translateY(-50%); /* Rotate the raindrop by -20 degrees and translate it to the right by 100% */
+  opacity: 0;
+}
+
+.rain-animation {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  animation: rain 4s linear infinite;
+  z-index: 2;
+}
+
+.rain-drop {
+  position: absolute;
+  bottom: 100%;
+  width: 1px;
+  height: 60px;
+  background-color: rgba(255, 255, 255, 0.5);
+  animation: rain-drop 2s ease-out infinite;
+}
+
+@keyframes rain {
+  0% {
+    transform: rotate(20deg) translateX(25%) translateY(-50%); /* Rotate the raindrop by -20 degrees, translate it to the right by 25%, and translate it upwards by 50% */
+    opacity: 1;
+  }
+  100% {
+    transform: rotate(20deg) translateX(-75%) translateY(200vh); /* Rotate the raindrop by -20 degrees, translate it to the left by 75%, and translate it downwards by 200vh */
+    opacity: 0; /* make the snowflakes disappear at the end */
+  }
+}
+
+@keyframes rain-drop {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-100%);
+  }
+}
+
+.rain:nth-child(n+1):nth-child(-n+21) {
+  animation-delay: calc(0.2s * (n - 1));
+  left: calc(10% * (n - 1) + 15%);
+  top: calc(-200% * (n - 1) + 15%);
+}
