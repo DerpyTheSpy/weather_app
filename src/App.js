@@ -43,6 +43,19 @@ const getBackgroundImage = (icon) => {
   }
 };
 
+const preloadImages = (images) => {
+  const imagePromises = images.map((image) => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = resolve;
+      img.onerror = reject;
+      img.src = image;
+    });
+  });
+
+  return Promise.all(imagePromises);
+};
+
 const App = ({ selectedCity }) => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -50,10 +63,7 @@ const App = ({ selectedCity }) => {
   const [animation, setAnimation] = useState(null);
   const [inputValue, setInputValue] = useState('');
   const [preferences, setPreferences] = useState({ units: 'etric' });
-
-  const handleUnitChange = (unit) => {
-    setPreferences({ units: unit });
-  };
+  const [backgroundImages, setBackgroundImages] = useState({});
 
   useEffect(() => {
     document.body.style.transition = 'background-image 0.5s ease';
@@ -66,8 +76,39 @@ const App = ({ selectedCity }) => {
     document.body.style.padding = '0';
   }, []);
 
+  useEffect(() => {
+    const images = [
+      getBackgroundImage('01d'),
+      getBackgroundImage('01n'),
+      getBackgroundImage('02d'),
+      getBackgroundImage('02n'),
+      getBackgroundImage('03d'),
+      getBackgroundImage('03n'),
+      getBackgroundImage('04d'),
+      getBackgroundImage('04n'),
+      getBackgroundImage('09d'),
+      getBackgroundImage('09n'),
+      getBackgroundImage('10d'),
+      getBackgroundImage('10n'),
+      getBackgroundImage('11d'),
+      getBackgroundImage('11n'),
+      getBackgroundImage('13d'),
+      getBackgroundImage('13n'),
+      getBackgroundImage('50d'),
+      getBackgroundImage('50n'),
+      require('./components/Images/default.jpg'),
+    ];
 
-
+    preloadImages(images).then(() => {
+      setBackgroundImages(images.reduce((acc, image) => {
+        acc[image] = true;
+        return acc;
+      }, {}));
+    });
+  }, []);
+  const handleUnitChange = (unit) => {
+    setPreferences({ units: unit });
+  };
   useEffect(() => {
     if (data && data.weather && data.weather.length > 0) {
       const weather = data?.weather[0]?.id;
@@ -84,9 +125,9 @@ const App = ({ selectedCity }) => {
         default:
           setAnimation(null);
       }
-      console.log('Animation state:', animation);
     }
   }, [data, animation]);
+
   const handleSearch = async (location, units) => {
     setLoading(true);
     setAnimation(null); // reset animation state to null
@@ -113,14 +154,17 @@ const App = ({ selectedCity }) => {
       console.log('Data state:', data);
       if (data && data.weather && data.weather.length > 0) {
         setData(data);
-        document.body.style.backgroundImage = `url(${getBackgroundImage(data?.weather[0]?.icon)})`;
-        document.body.style.backgroundSize = 'cover';
-        document.body.style.backgroundPosition = 'top center';
-        document.body.style.backgroundRepeat = 'no-repeat';
-        document.body.style.height = '100vh';
-document.body.style.margin = '0';
-        document.body.style.padding = '0';
-     } else {
+        const backgroundImage = getBackgroundImage(data?.weather[0]?.icon);
+        if (backgroundImages[backgroundImage]) {
+          document.body.style.backgroundImage = `url(${backgroundImage})`;
+        } else {
+          const img = new Image();
+          img.onload = () => {
+            document.body.style.backgroundImage = `url(${backgroundImage})`;
+          };
+          img.src = backgroundImage;
+        }
+      } else {
         setError('Error: Unknown input.');
         window.alert(error); // display an alert box with the error message
         setInputValue('');
@@ -136,14 +180,11 @@ document.body.style.margin = '0';
       }, 500);
     }
   };
+
   const handleLocationUpdate = (location) => {
     handleSearch(location, preferences.units);
   };
-  useEffect(() => {
-    if (selectedCity) {
-      handleSearch(selectedCity);
-    }
-  }, [selectedCity]);
+
   const getConvertedTemperature = () => {
     if (data && data.main) {
       switch (preferences.units) {

@@ -39,6 +39,7 @@
 .weather-display-wrapper {
   position: relative;
   z-index: 10;
+  padding: 20px 5px;
 }
 
 .animation-container {

@@ -31,7 +31,7 @@ const WeatherDisplay = ({ data, temperature, units, onUnitChange }) => {
           <div className="weather-details">
             <div className="detail">
               <label>Current Temp:</label>
-              <span>{temperature} {units === 'metric'? '°C' : '°F'}</span>
+              <span>{temperature} {units === 'etric'? '°C' : '°F'}</span>
             </div>
             <div className="detail">
               <label>Sky Conditions:</label>
@@ -43,23 +43,29 @@ const WeatherDisplay = ({ data, temperature, units, onUnitChange }) => {
             </div>
             <div className="detail">
               <label>Feels Like:</label>
-              <span>{getFeelsLikeTemperature()} {units === 'metric'? '°C' : '°F'}</span>
+              <span>{getFeelsLikeTemperature()} {units === 'etric'? '°C' : '°F'}</span>
             </div>
             <div className="detail">
-              <label>Wind:</label>
-              <span>{data.wind.speed} m/s</span>
+              <div>
+                <label>Wind:</label>
+                <span>{data.wind.speed} m/s</span>
+                </div>
             </div>
             <div className="detail">
-              <label>Sunrise:</label>
-              <span>{new Date(data.sys.sunrise * 1000).toLocaleTimeString()}</span>
+            <div>
+                <label>Visibility:</label>
+                <span>{data.visibility / 1000} km</span>
+              </div>
             </div>
-            <div className="detail">
-              <label>Sunset:</label>
-              <span>{new Date(data.sys.sunset * 1000).toLocaleTimeString()}</span>
-            </div>
-            <div className="detail">
-              <label>Visibility:</label>
-              <span>{data.visibility / 1000} km</span>
+            <div className="detail flex">
+              <div>
+                <label>Sunrise:</label>
+                <span>{new Date(data.sys.sunrise * 1000).toLocaleTimeString()}</span>
+              </div>
+              <div>
+                <label>Sunset:</label>
+                <span>{new Date(data.sys.sunset * 1000).toLocaleTimeString()}</span>
+              </div>
             </div>
             <div className="detail">
               <label>Units:</label>

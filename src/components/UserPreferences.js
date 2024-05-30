@@ -84,6 +84,7 @@ function UserPreferences({ onLocationUpdate }) {
     <div>
       <button onClick={handleTogglePreferences} className='toggle-preferences-button'>Toggle Preferences</button>
       <div className={`user-preferences-container ${showPreferences ? 'show' : ''}`}>
+      <button onClick={handleTogglePreferences} className='exit-button'>Exit</button>
         <h2>User Preferences</h2>
         <form onSubmit={(event) => {
           event.preventDefault();
