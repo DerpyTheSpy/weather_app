@@ -1,4 +1,4 @@
-import { MongoClient } from 'ongodb';
+import { MongoClient } from 'mongodb';
 
 dotenv.config({ path: '../.env' }); 
 
