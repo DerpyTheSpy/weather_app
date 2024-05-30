@@ -20,8 +20,8 @@
   },
   "scripts": {
     "dev": "npm run start & npm run server",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build",
+    "predeploy": "npm run build && mkdir gh-pages && cp -r build/* gh-pages/",
+    "deploy": "git push origin gh-pages",
     "start": "react-scripts start",
     "server": "json-server --watch db.json --static public",
     "build": "react-scripts build",

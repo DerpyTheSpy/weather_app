@@ -1,10 +1,29 @@
+import { MongoClient } from 'ongodb';
+
+dotenv.config({ path: '../.env' }); 
+
+const mongoUri = process.env.MONGODB_URI;
+const dbName = 'Cluster0';
+const collectionName = 'weather_app';
+
+let client;
+let db;
+let collection;
+
+async function connectToMongo() {
+  if (!client) {
+    client = new MongoClient(mongoUri);
+    db = client.db(dbName);
+    collection = db.collection(collectionName);
+  }
+  return collection;
+}
+
 export async function fetchUserPreferences() {
+  const collection = await connectToMongo();
   try {
-    const response = await fetch('http://localhost:3000/weather_app/userPreferences');
-    if (!response.ok) {
-      throw new Error('Error fetching user preferences');
-    }
-    return await response.json();
+    const preferences = await collection.find().toArray();
+    return preferences;
   } catch (error) {
     console.error('Error fetching user preferences:', error);
     throw error;
@@ -12,18 +31,10 @@ export async function fetchUserPreferences() {
 }
 
 export async function createUserPreference(newPreference) {
-  console.log('Creating new preference:', newPreference);
+  const collection = await connectToMongo();
   try {
-    const response = await fetch('http://localhost:3000/weather_app/userPreferences', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(newPreference),
-    });
-    if (!response.ok) {
-      throw new Error('Error creating user preference');
-    }
-    const data = await response.json();
-    console.log('New preference created with id:', data.id);
+    const result = await collection.insertOne(newPreference);
+    return result.insertedId;
   } catch (error) {
     console.error('Error creating user preference:', error);
     throw error;
@@ -31,17 +42,10 @@ export async function createUserPreference(newPreference) {
 }
 
 export async function updateUserPreference(id, updatedPreference) {
-  console.log('Updating preference with id:', id);
+  const collection = await connectToMongo();
   try {
-    const response = await fetch(`http://localhost:3000/weather_app/userPreferences/${id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(updatedPreference),
-    });
-    if (!response.ok) {
-      throw new Error('Error updating user preference');
-    }
-    return await response.json();
+    const result = await collection.updateOne({ _id: id }, { $set: updatedPreference });
+    return result.modifiedCount;
   } catch (error) {
     console.error('Error updating user preference:', error);
     throw error;
@@ -49,14 +53,10 @@ export async function updateUserPreference(id, updatedPreference) {
 }
 
 export async function deleteUserPreference(id) {
-  console.log('Deleting preference with id:', id);
+  const collection = await connectToMongo();
   try {
-    const response = await fetch(`http://localhost:3000/weather_app/userPreferences/${id}`, {
-      method: 'DELETE',
-    });
-    if (!response.ok) {
-      throw new Error('Error deleting user preference');
-    }
+    const result = await collection.deleteOne({ _id: id });
+    return result.deletedCount;
   } catch (error) {
     console.error('Error deleting user preference:', error);
     throw error;
