@@ -7,40 +7,25 @@ import ThunderstormAnimation from './components/ThunderstormAnimation.js';
 import UserPreferences from './components/UserPreferences.js';
 import './App.css'
 
-
 const getBackgroundImage = (icon) => {
+  const requireImage = (imageName) => require(`./components/Images/${imageName}.jpg`);
   switch (icon) {
     case '01d':
-      return require('./components/Images/01d.jpg');
     case '01n':
-      return require('./components/Images/01n.jpg');
     case '02d':
-      return require('./components/Images/02d.jpg');
     case '02n':
-      return require('./components/Images/02n.jpg');
     case '03d':
     case '03n':
-      return require('./components/Images/03d.jpg');
     case '04d':
     case '04n':
-      return require('./components/Images/04d.jpg');
     case '09d':
-    case '09n':
-      return require('./components/Images/09d.jpg');
     case '10d':
-    case '10n':
-      return require('./components/Images/10d.jpg');
     case '11d':
-    case '11n':
-      return require('./components/Images/11d.jpg');
     case '13d':
-    case '13n':
-      return require('./components/Images/13d.jpg');
     case '50d':
-    case '50n':
-      return require('./components/Images/50d.jpg');
+      return requireImage(icon);
     default:
-      return require('./components/Images/default.jpg');
+      return requireImage('default');
   }
 };
 
@@ -65,10 +50,12 @@ const App = ({ selectedCity }) => {
   const [inputValue, setInputValue] = useState('');
   const [preferences, setPreferences] = useState({ units: 'etric' });
   const [backgroundImages, setBackgroundImages] = useState({});
+  const [errorMessage, setErrorMessage] = useState(null); 
+  const [errorDuration] = useState(5000); // Set error message duration to 5 seconds
+  const [loadingDuration] = useState(1000); // Set loading duration to 1 second
 
   useEffect(() => {
     document.body.style.transition = 'background-image 0.5s ease';
-    document.body.style.backgroundImage = `url(${require('./components/Images/default.jpg')})`;
     document.body.style.backgroundSize = 'cover';
     document.body.style.backgroundPosition = 'top center';
     document.body.style.backgroundRepeat = 'no-repeat';
@@ -79,26 +66,10 @@ const App = ({ selectedCity }) => {
 
   useEffect(() => {
     const images = [
-      getBackgroundImage('01d'),
-      getBackgroundImage('01n'),
-      getBackgroundImage('02d'),
-      getBackgroundImage('02n'),
-      getBackgroundImage('03d'),
-      getBackgroundImage('03n'),
-      getBackgroundImage('04d'),
-      getBackgroundImage('04n'),
-      getBackgroundImage('09d'),
-      getBackgroundImage('09n'),
-      getBackgroundImage('10d'),
-      getBackgroundImage('10n'),
-      getBackgroundImage('11d'),
-      getBackgroundImage('11n'),
-      getBackgroundImage('13d'),
-      getBackgroundImage('13n'),
-      getBackgroundImage('50d'),
-      getBackgroundImage('50n'),
-      require('./components/Images/default.jpg'),
-    ];
+      '01d', '01n', '02d', '02n', '03d', '03n', '04d', '04n',
+      '09d', '09n', '10d', '10n', '11d', '11n', '13d', '13n',
+      '50d', '50n', 'default'
+    ].map(icon => getBackgroundImage(icon));
 
     preloadImages(images).then(() => {
       setBackgroundImages(images.reduce((acc, image) => {
@@ -107,9 +78,11 @@ const App = ({ selectedCity }) => {
       }, {}));
     });
   }, []);
+  
   const handleUnitChange = (unit) => {
     setPreferences({ units: unit });
   };
+
   useEffect(() => {
     if (data && data.weather && data.weather.length > 0) {
       const weather = data?.weather[0]?.id;
@@ -131,26 +104,28 @@ const App = ({ selectedCity }) => {
 
   const handleSearch = async (location, units) => {
     setLoading(true);
-    setAnimation(null); // reset animation state to null
+    setAnimation(null);
     try {
       const response = await fetch(
         `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=${units}&appid=${process.env.REACT_APP_API_KEY}`
       );
-
+  
       if (!response.ok) {
         if (response.status === 404) {
-          setError('Error: City not found.');
+          setErrorMessage('Error: City not found.'); // Set error message
         } else {
-          setError('Error: An unexpected error occurred.');
+          setErrorMessage('Error: An unexpected error occurred.'); // Set error message
         }
-        window.alert(error); // display an alert box with the error message
         setInputValue('');
         setTimeout(() => {
-          setLoading(false); // set loading to false after half a second
-        }, 500);
+          setErrorMessage(null); // Clear error message after specified duration
+        }, errorDuration);
+        setTimeout(() => {
+          setLoading(false);
+        }, loadingDuration)
         return;
       }
-
+  
       const data = await response.json();
       console.log('Data state:', data);
       if (data && data.weather && data.weather.length > 0) {
@@ -166,21 +141,26 @@ const App = ({ selectedCity }) => {
           img.src = backgroundImage;
         }
       } else {
-        setError('Error: Unknown input.');
-        window.alert(error); // display an alert box with the error message
+        setErrorMessage('Error: Unknown input.'); // Set error message
         setInputValue('');
       }
     } catch (error) {
       console.error('Error fetching data:', error);
-      setError('Error: An unexpected error occurred.');
-      window.alert(error); // display an alert box with the error message
+      setErrorMessage('Error: An unexpected error occurred.'); // Set error message
       setInputValue('');
+      // Use setError here to handle the error
+      setError(error);
     } finally {
       setTimeout(() => {
-        setLoading(false); // set loading to false after half a second
-      }, 500);
+        setErrorMessage(null); // Clear error message after specified duration
+        setLoading(false);
+      }, errorDuration);
+      setTimeout(() => {
+        setLoading(false); // Clear loading message after specified duration
+      }, loadingDuration);
     }
   };
+  
 
   const handleLocationUpdate = (location) => {
     handleSearch(location, preferences.units);
@@ -192,9 +172,7 @@ const App = ({ selectedCity }) => {
         case 'metric':
           return Math.round(data.main.temp - 273.15);
         case 'imperial':
-          return Math.round(
-            (data.main.temp - 273.15) * 1.8 + 32
-          );
+          return Math.round((data.main.temp - 273.15) * 1.8 + 32);
         default:
           return Math.round(data.main.temp - 273.15);
       }
@@ -204,6 +182,11 @@ const App = ({ selectedCity }) => {
 
   return (
     <div className="App" style={{ backgroundSize: 'cover' }}>
+      {errorMessage && ( // Display error message
+        <div className="error-message-container">
+          <p className="error-message">{errorMessage}</p>
+        </div>
+      )}
       <WeatherInput
         onSearch={handleSearch}
         error={error}
