@@ -7,6 +7,7 @@ import ThunderstormAnimation from './components/ThunderstormAnimation.js';
 import UserPreferences from './components/UserPreferences.js';
 import './App.css'
 
+
 const getBackgroundImage = (icon) => {
   switch (icon) {
     case '01d':
@@ -133,7 +134,7 @@ const App = ({ selectedCity }) => {
     setAnimation(null); // reset animation state to null
     try {
       const response = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=${units}&appid=85066c6de56d3de5fcc05b6934af3e9e`
+        `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=${units}&appid=${process.env.REACT_APP_API_KEY}`
       );
 
       if (!response.ok) {
