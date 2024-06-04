@@ -11,8 +11,6 @@ const ThunderstormAnimation = ({ animation }) => {
 
   useEffect(() => {
     if (thunderstormContainerRef.current) {
-      const thunderstormContainer = thunderstormContainerRef.current;
-      const boundingClientRect = thunderstormContainer.getBoundingClientRect();
       setShowThunderBolts(true);
     }
   }, [thunderstormContainerRef]);

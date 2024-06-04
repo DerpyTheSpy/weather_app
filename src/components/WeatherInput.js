@@ -13,12 +13,17 @@ const WeatherInput = ({ onSearch, onLocationUpdate }) => {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    if (!location) {
-      alert('No input detected. Please enter a city name');
+    if (!location.trim()) {
+      alert('No input detected. Please enter a city name.');
+      return;
+    }
+    if (!isNaN(location)) {
+      alert('Invalid city name. Please enter a valid city name.');
       return;
     }
     onSearch(location);
   };
+  
 
   const handleInputChange = (e) => {
     const value = e.target.value;
