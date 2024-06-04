@@ -26,7 +26,7 @@ const WeatherDisplay = ({ data, temperature, units, onUnitChange }) => {
         <>
           <h2>{data.name}</h2>
           <div className="detail">
-            <img src={icon}></img>
+          <img src={icon} alt="" />
           </div>
           <div className="weather-details">
             <div className="detail">
