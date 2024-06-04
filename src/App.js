@@ -65,6 +65,7 @@ const App = ({ selectedCity }) => {
   const [inputValue, setInputValue] = useState('');
   const [preferences, setPreferences] = useState({ units: 'etric' });
   const [backgroundImages, setBackgroundImages] = useState({});
+  const [errorMessage, setErrorMessage] = useState(null); 
 
   useEffect(() => {
     document.body.style.transition = 'background-image 0.5s ease';
@@ -131,7 +132,7 @@ const App = ({ selectedCity }) => {
 
   const handleSearch = async (location, units) => {
     setLoading(true);
-    setAnimation(null); // reset animation state to null
+    setAnimation(null);
     try {
       const response = await fetch(
         `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=${units}&appid=${process.env.REACT_APP_API_KEY}`
@@ -139,15 +140,15 @@ const App = ({ selectedCity }) => {
 
       if (!response.ok) {
         if (response.status === 404) {
-          setError('Error: City not found.');
+          setErrorMessage('Error: City not found.'); // Set error message
         } else {
-          setError('Error: An unexpected error occurred.');
+          setErrorMessage('Error: An unexpected error occurred.'); // Set error message
         }
-        window.alert(error); // display an alert box with the error message
         setInputValue('');
         setTimeout(() => {
-          setLoading(false); // set loading to false after half a second
-        }, 500);
+          setErrorMessage(null); // Clear error message after 4 seconds
+          setLoading(false);
+        }, 4000);
         return;
       }
 
@@ -166,19 +167,18 @@ const App = ({ selectedCity }) => {
           img.src = backgroundImage;
         }
       } else {
-        setError('Error: Unknown input.');
-        window.alert(error); // display an alert box with the error message
+        setErrorMessage('Error: Unknown input.'); // Set error message
         setInputValue('');
       }
     } catch (error) {
       console.error('Error fetching data:', error);
-      setError('Error: An unexpected error occurred.');
-      window.alert(error); // display an alert box with the error message
+      setErrorMessage('Error: An unexpected error occurred.'); // Set error message
       setInputValue('');
     } finally {
       setTimeout(() => {
-        setLoading(false); // set loading to false after half a second
-      }, 500);
+        setErrorMessage(null); // Clear error message after 4 seconds
+        setLoading(false);
+      }, 4000);
     }
   };
 
@@ -204,6 +204,11 @@ const App = ({ selectedCity }) => {
 
   return (
     <div className="App" style={{ backgroundSize: 'cover' }}>
+      {errorMessage && ( // Display error message
+        <div className="error-message-container">
+          <p className="error-message">{errorMessage}</p>
+        </div>
+      )}
       <WeatherInput
         onSearch={handleSearch}
         error={error}

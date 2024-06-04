@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import './WeatherInput.css';
 
-
 const WeatherInput = ({ onSearch, onLocationUpdate }) => {
   const [location, setLocation] = useState('');
+  const [errorMessage, setErrorMessage] = useState(null); // New state for error message
 
   useEffect(() => {
     if (onLocationUpdate) {
@@ -14,20 +14,20 @@ const WeatherInput = ({ onSearch, onLocationUpdate }) => {
   const handleSearch = (e) => {
     e.preventDefault();
     if (!location.trim()) {
-      alert('No input detected. Please enter a city name.');
+      setErrorMessage('No input detected. Please enter a city name.'); // Set error message
       return;
     }
     if (!isNaN(location)) {
-      alert('Invalid city name. Please enter a valid city name.');
+      setErrorMessage('Invalid city name. Please enter a valid city name.'); // Set error message
       return;
     }
     onSearch(location);
   };
-  
 
   const handleInputChange = (e) => {
     const value = e.target.value;
     setLocation(value);
+    setErrorMessage(null); // Clear error message when input changes
   };
 
   return (
@@ -44,6 +44,11 @@ const WeatherInput = ({ onSearch, onLocationUpdate }) => {
           Search
         </button>
       </div>
+      {errorMessage && ( // Display error message
+        <div className="error-message-container">
+          <p className="error-message">{errorMessage}</p>
+        </div>
+      )}
     </form>
   );
 };

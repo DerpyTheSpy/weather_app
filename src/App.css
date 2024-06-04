@@ -41,6 +41,24 @@
   z-index: 10;
   padding: 20px 5px;
 }
+.error-message-container {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(255, 0, 0, 0.5);
+  border-radius: 10px;
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.error-message {
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+}
 
 .animation-container {
   position: absolute;
