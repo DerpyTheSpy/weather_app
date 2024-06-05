@@ -25,21 +25,9 @@ const getBackgroundImage = (icon) => {
     case '50d':
       return requireImage(icon);
     default:
+      console.log("Default case:", icon);
       return requireImage('default');
   }
-};
-
-const preloadImages = (images) => {
-  const imagePromises = images.map((image) => {
-    return new Promise((resolve, reject) => {
-      const img = new Image();
-      img.onload = resolve;
-      img.onerror = reject;
-      img.src = image;
-    });
-  });
-
-  return Promise.all(imagePromises);
 };
 
 const App = ({ selectedCity }) => {
@@ -48,10 +36,8 @@ const App = ({ selectedCity }) => {
   const [error, setError] = useState(null);
   const [animation, setAnimation] = useState(null);
   const [inputValue, setInputValue] = useState('');
-  const [preferences, setPreferences] = useState({ units: 'etric' });
-  const [backgroundImages, setBackgroundImages] = useState({});
+  const [preferences, setPreferences] = useState({ units: 'metric' });
   const [errorMessage, setErrorMessage] = useState(null); 
-  const [errorDuration] = useState(5000); // Set error message duration to 5 seconds
   const [loadingDuration] = useState(1000); // Set loading duration to 1 second
 
   useEffect(() => {
@@ -62,23 +48,12 @@ const App = ({ selectedCity }) => {
     document.body.style.height = '100vh';
     document.body.style.margin = '0';
     document.body.style.padding = '0';
+
+    // Load default image
+    const defaultImage = getBackgroundImage('default');
+    document.body.style.backgroundImage = `url(${defaultImage})`;
   }, []);
 
-  useEffect(() => {
-    const images = [
-      '01d', '01n', '02d', '02n', '03d', '03n', '04d', '04n',
-      '09d', '09n', '10d', '10n', '11d', '11n', '13d', '13n',
-      '50d', '50n', 'default'
-    ].map(icon => getBackgroundImage(icon));
-
-    preloadImages(images).then(() => {
-      setBackgroundImages(images.reduce((acc, image) => {
-        acc[image] = true;
-        return acc;
-      }, {}));
-    });
-  }, []);
-  
   const handleUnitChange = (unit) => {
     setPreferences({ units: unit });
   };
@@ -105,6 +80,7 @@ const App = ({ selectedCity }) => {
   const handleSearch = async (location, units) => {
     setLoading(true);
     setAnimation(null);
+    setErrorMessage(null);
     try {
       const response = await fetch(
         `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=${units}&appid=${process.env.REACT_APP_API_KEY}`
@@ -118,9 +94,6 @@ const App = ({ selectedCity }) => {
         }
         setInputValue('');
         setTimeout(() => {
-          setErrorMessage(null); // Clear error message after specified duration
-        }, errorDuration);
-        setTimeout(() => {
           setLoading(false);
         }, loadingDuration)
         return;
@@ -131,15 +104,7 @@ const App = ({ selectedCity }) => {
       if (data && data.weather && data.weather.length > 0) {
         setData(data);
         const backgroundImage = getBackgroundImage(data?.weather[0]?.icon);
-        if (backgroundImages[backgroundImage]) {
-          document.body.style.backgroundImage = `url(${backgroundImage})`;
-        } else {
-          const img = new Image();
-          img.onload = () => {
-            document.body.style.backgroundImage = `url(${backgroundImage})`;
-          };
-          img.src = backgroundImage;
-        }
+        document.body.style.backgroundImage = `url(${backgroundImage})`;
       } else {
         setErrorMessage('Error: Unknown input.'); // Set error message
         setInputValue('');
@@ -151,10 +116,6 @@ const App = ({ selectedCity }) => {
       // Use setError here to handle the error
       setError(error);
     } finally {
-      setTimeout(() => {
-        setErrorMessage(null); // Clear error message after specified duration
-        setLoading(false);
-      }, errorDuration);
       setTimeout(() => {
         setLoading(false); // Clear loading message after specified duration
       }, loadingDuration);

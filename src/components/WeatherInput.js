@@ -13,6 +13,7 @@ const WeatherInput = ({ onSearch, onLocationUpdate }) => {
 
   const handleSearch = (e) => {
     e.preventDefault();
+    setErrorMessage(null); // Reset error message
     if (!location.trim()) {
       setErrorMessage('No input detected. Please enter a city name.'); // Set error message
       return;
