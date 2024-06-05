@@ -1,6 +1,6 @@
 export async function fetchUserPreferences() {
   try {
-    const response = await fetch('http://localhost:3000/weather_app/userPreferences');
+    const response = await fetch('/api/userPreferences');
     if (!response.ok) {
       throw new Error('Error fetching user preferences');
     }
@@ -12,9 +12,8 @@ export async function fetchUserPreferences() {
 }
 
 export async function createUserPreference(newPreference) {
-  console.log('Creating new preference:', newPreference);
   try {
-    const response = await fetch('http://localhost:3000/weather_app/userPreferences', {
+    const response = await fetch('/api/userPreferences', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(newPreference),
@@ -22,8 +21,7 @@ export async function createUserPreference(newPreference) {
     if (!response.ok) {
       throw new Error('Error creating user preference');
     }
-    const data = await response.json();
-    console.log('New preference created with id:', data.id);
+    return await response.json();
   } catch (error) {
     console.error('Error creating user preference:', error);
     throw error;
@@ -31,9 +29,8 @@ export async function createUserPreference(newPreference) {
 }
 
 export async function updateUserPreference(id, updatedPreference) {
-  console.log('Updating preference with id:', id);
   try {
-    const response = await fetch(`http://localhost:3000/weather_app/userPreferences/${id}`, {
+    const response = await fetch(`/api/userPreferences/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(updatedPreference),
@@ -49,9 +46,8 @@ export async function updateUserPreference(id, updatedPreference) {
 }
 
 export async function deleteUserPreference(id) {
-  console.log('Deleting preference with id:', id);
   try {
-    const response = await fetch(`http://localhost:3000/weather_app/userPreferences/${id}`, {
+    const response = await fetch(`/api/userPreferences/${id}`, {
       method: 'DELETE',
     });
     if (!response.ok) {

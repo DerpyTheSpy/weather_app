@@ -21,6 +21,10 @@ function UserPreferences({ onLocationUpdate }) {
   }, []);
 
   const handleCreatePreference = async (newPreference) => {
+    if (!newPreference.units ||!newPreference.location) {
+      console.error('Error creating user preference: units and location are required');
+      return;
+    }
     try {
       const newPreferenceData = await createUserPreference(newPreference);
       setPreferences([...preferences, newPreferenceData]);
@@ -29,11 +33,15 @@ function UserPreferences({ onLocationUpdate }) {
       console.error('Error creating user preference:', error);
     }
   };
-
+  
   const handleUpdatePreference = async (id, updatedPreference) => {
+    if (!updatedPreference.units ||!updatedPreference.location) {
+      console.error('Error updating preference: units and location are required');
+      return;
+    }
     try {
       await updateUserPreference(id, updatedPreference);
-      setPreferences(preferences.map(preference => preference.id === id ? updatedPreference : preference));
+      setPreferences(preferences.map(preference => preference.id === id? updatedPreference : preference));
       setSelectedPreference(updatedPreference); // Update selectedPreference with new values
     } catch (error) {
       console.error('Error updating preference:', error);
