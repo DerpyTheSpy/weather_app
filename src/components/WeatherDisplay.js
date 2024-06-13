@@ -31,7 +31,7 @@ const WeatherDisplay = ({ data, temperature, units, onUnitChange }) => {
           <div className="weather-details">
             <div className="detail">
               <label>Current Temp:</label>
-              <span>{temperature} {units === 'etric'? '°C' : '°F'}</span>
+              <span>{temperature} {units === 'metric'? '°C' : '°F'}</span>
             </div>
             <div className="detail">
               <label>Sky Conditions:</label>
@@ -43,7 +43,7 @@ const WeatherDisplay = ({ data, temperature, units, onUnitChange }) => {
             </div>
             <div className="detail">
               <label>Feels Like:</label>
-              <span>{getFeelsLikeTemperature()} {units === 'etric'? '°C' : '°F'}</span>
+              <span>{getFeelsLikeTemperature()} {units === 'metric'? '°C' : '°F'}</span>
             </div>
             <div className="detail">
               <div>
