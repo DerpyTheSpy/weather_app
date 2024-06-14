@@ -8,7 +8,6 @@ function UserPreferences({ onLocationUpdate }) {
   const [selectedPreference, setSelectedPreference] = useState(null);
   const [isUpdating, setIsUpdating] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [error, setError] = useState(null);
   const [showManagePreferences, setShowManagePreferences] = useState(false);
   const [showCreatePreferences, setShowCreatePreferences] = useState(false);
 
@@ -48,17 +47,18 @@ function UserPreferences({ onLocationUpdate }) {
 
   const handleCreatePreference = async (newPreference) => {
     try {
+      console.log('Creating new preference:', newPreference);
       // Check if the location value is valid (not null, empty, or contains numbers)
       if (!newPreference.location || !/^[a-zA-Z\s]+$/.test(newPreference.location)) {
         throw new Error('Invalid location value. Please enter a non-empty city name without numbers.');
       }
-  
+
       const newPreferenceData = await createUserPreference(newPreference);
       setPreferences((prevPreferences) => [...prevPreferences, newPreferenceData]);
       setNewPreference({ units: '', location: '', notifications: false });
     } catch (error) {
       console.error('Error creating user preference:', error);
-  
+
       if (error.message.includes('location')) {
         alert(error.message);
         setNewPreference((prevState) => ({ ...prevState, location: '' }));
@@ -69,12 +69,15 @@ function UserPreferences({ onLocationUpdate }) {
   const handleUpdatePreference = async (id, updatedPreference) => {
     try {
       setIsUpdating(true);
+      console.log('Updating preference with ID:', id);
+      console.log('Updated preference data:', updatedPreference);
       const updatedPreferenceData = await updateUserPreference(id, updatedPreference);
       setPreferences(preferences.map((preference) => (preference.id === id ? updatedPreferenceData : preference)));
       setSelectedPreference(updatedPreferenceData); // Update selectedPreference with new values
       setIsUpdating(false);
     } catch (error) {
       console.error('Error updating preference:', error);
+      setIsUpdating(false);
     }
   };
 
@@ -88,15 +91,22 @@ function UserPreferences({ onLocationUpdate }) {
       setIsDeleting(false);
     } catch (error) {
       console.error('Error deleting preference:', error);
+      setIsDeleting(false);
     }
   };
 
   const handleToggleManagePreferences = () => {
     setShowManagePreferences(!showManagePreferences);
+    if (!showManagePreferences) {
+      setShowCreatePreferences(false);
+    }
   };
 
   const handleToggleCreatePreferences = () => {
     setShowCreatePreferences(!showCreatePreferences);
+    if (!showCreatePreferences) {
+      setShowManagePreferences(false);
+    }
   };
 
   const handleSelectPreference = (preference) => {
@@ -115,7 +125,9 @@ function UserPreferences({ onLocationUpdate }) {
 
   const handleApplyPreference = () => {
     if (selectedPreference) {
-      onLocationUpdate(selectedPreference.location);
+      console.log('Applying preference with location:', selectedPreference.location);
+      console.log('Applying preference with units:', selectedPreference.units);
+      onLocationUpdate(selectedPreference.location, selectedPreference.units);
     } else {
       console.log('No preference selected');
     }
@@ -176,14 +188,16 @@ function UserPreferences({ onLocationUpdate }) {
             <button
               type="button"
               onClick={() => handleUpdatePreference(selectedPreference.id, updatedPreference)}
-              className="update-button">
-              Update Preference
+              className="update-button"
+              disabled={isUpdating}>
+              {isUpdating ? 'Updating...' : 'Update Preference'}
             </button>
             <button
               type="button"
               onClick={() => handleDeletePreference(selectedPreference.id)}
-              className="delete-button">
-              Delete Preference
+              className="delete-button"
+              disabled={isDeleting}>
+              {isDeleting ? 'Deleting...' : 'Delete Preference'}
             </button>
             <button type="button" onClick={handleApplyPreference} className="apply-button">
               Apply Preference

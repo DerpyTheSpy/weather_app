@@ -4,40 +4,16 @@ import './WeatherDisplay.css';
 const WeatherDisplay = ({ data, units, onUnitChange }) => {
   const icon = data?.weather[0]?.icon ? `http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png` : null;
 
-  const convertKelvinToCelsius = (kelvin) => {
-    return (kelvin - 273.15).toFixed(1); // Conversion formula from Kelvin to Celsius
-  };
-
-  const convertKelvinToFahrenheit = (kelvin) => {
-    return ((kelvin - 273.15) * 9/5 + 32).toFixed(1); // Conversion formula from Kelvin to Fahrenheit
-  };
-
-  const getConvertedTemperature = () => {
+  const getTemperature = () => {
     if (data && data.main) {
-      const kelvinTemp = data.main.temp;
-      switch (units) {
-        case 'metric':
-          return `${convertKelvinToCelsius(kelvinTemp)} °C`;
-        case 'imperial':
-          return `${convertKelvinToFahrenheit(kelvinTemp)} °F`;
-        default:
-          return `${convertKelvinToCelsius(kelvinTemp)} °C`;
-      }
+      return `${data.main.temp} ${units === 'metric' ? '°C' : '°F'}`;
     }
     return null;
   };
 
   const getFeelsLikeTemperature = () => {
     if (data && data.main) {
-      const kelvinFeelsLike = data.main.feels_like;
-      switch (units) {
-        case 'metric':
-          return `${convertKelvinToCelsius(kelvinFeelsLike)} °C`;
-        case 'imperial':
-          return `${convertKelvinToFahrenheit(kelvinFeelsLike)} °F`;
-        default:
-          return `${convertKelvinToCelsius(kelvinFeelsLike)} °C`;
-      }
+      return `${data.main.feels_like} ${units === 'metric' ? '°C' : '°F'}`;
     }
     return null;
   };
@@ -53,7 +29,7 @@ const WeatherDisplay = ({ data, units, onUnitChange }) => {
           <div className="weather-details">
             <div className="detail">
               <label>Current Temp:</label>
-              <span>{getConvertedTemperature()}</span>
+              <span>{getTemperature()}</span>
             </div>
             <div className="detail">
               <label>Sky Conditions:</label>

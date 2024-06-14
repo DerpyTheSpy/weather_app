@@ -5,7 +5,7 @@ import RainAnimation from './components/RainAnimation.js';
 import SnowAnimation from './components/SnowAnimation.js';
 import ThunderstormAnimation from './components/ThunderstormAnimation.js';
 import UserPreferences from './components/UserPreferences.js';
-import './App.css'
+import './App.css';
 
 const getBackgroundImage = (icon) => {
   const requireImage = (imageName) => require(`./components/Images/${imageName}.jpg`);
@@ -77,13 +77,13 @@ const App = ({ selectedCity }) => {
     }
   }, [data, animation]);
 
-  const handleSearch = async (location, units) => {
+  const handleSearch = async (location) => {
     setLoading(true);
     setAnimation(null);
     setErrorMessage(null);
     try {
       const response = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=${units}&appid=${process.env.REACT_APP_API_KEY}`
+        `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=${preferences.units}&appid=${process.env.REACT_APP_API_KEY}`
       );
   
       if (!response.ok) {
@@ -124,21 +124,7 @@ const App = ({ selectedCity }) => {
   
 
   const handleLocationUpdate = (location) => {
-    handleSearch(location, preferences.units);
-  };
-
-  const getConvertedTemperature = () => {
-    if (data && data.main) {
-      switch (preferences.units) {
-        case 'metric':
-          return Math.round(data.main.temp - 273.15);
-        case 'imperial':
-          return Math.round((data.main.temp - 273.15) * 1.8 + 32);
-        default:
-          return Math.round(data.main.temp - 273.15);
-      }
-    }
-    return null;
+    handleSearch(location);
   };
 
   return (
@@ -166,7 +152,7 @@ const App = ({ selectedCity }) => {
             {animation === 'snow' && <SnowAnimation animation={animation} />}
             {animation === 'thunderstorm' && <ThunderstormAnimation />}
           </div>
-          <WeatherDisplay data={data} temperature={getConvertedTemperature()} units={preferences.units} onUnitChange={handleUnitChange} />
+          <WeatherDisplay data={data} units={preferences.units} onUnitChange={handleUnitChange} />
         </div>
       )}
       <UserPreferences onLocationUpdate={handleLocationUpdate} />
