@@ -1,20 +1,42 @@
 import React from 'react';
 import './WeatherDisplay.css';
 
-const WeatherDisplay = ({ data, temperature, units, onUnitChange }) => {
-  const icon = `http://openweathermap.org/img/wn/${data?.weather[0]?.icon}@2x.png`;
+const WeatherDisplay = ({ data, units, onUnitChange }) => {
+  const icon = data?.weather[0]?.icon ? `http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png` : null;
+
+  const convertKelvinToCelsius = (kelvin) => {
+    return (kelvin - 273.15).toFixed(1); // Conversion formula from Kelvin to Celsius
+  };
+
+  const convertKelvinToFahrenheit = (kelvin) => {
+    return ((kelvin - 273.15) * 9/5 + 32).toFixed(1); // Conversion formula from Kelvin to Fahrenheit
+  };
+
+  const getConvertedTemperature = () => {
+    if (data && data.main) {
+      const kelvinTemp = data.main.temp;
+      switch (units) {
+        case 'metric':
+          return `${convertKelvinToCelsius(kelvinTemp)} °C`;
+        case 'imperial':
+          return `${convertKelvinToFahrenheit(kelvinTemp)} °F`;
+        default:
+          return `${convertKelvinToCelsius(kelvinTemp)} °C`;
+      }
+    }
+    return null;
+  };
 
   const getFeelsLikeTemperature = () => {
     if (data && data.main) {
+      const kelvinFeelsLike = data.main.feels_like;
       switch (units) {
         case 'metric':
-          return Math.round(data.main.feels_like - 273.15);
+          return `${convertKelvinToCelsius(kelvinFeelsLike)} °C`;
         case 'imperial':
-          return Math.round(
-            (data.main.feels_like - 273.15) * 1.8 + 32
-          );
+          return `${convertKelvinToFahrenheit(kelvinFeelsLike)} °F`;
         default:
-          return Math.round(data.main.feels_like - 273.15);
+          return `${convertKelvinToCelsius(kelvinFeelsLike)} °C`;
       }
     }
     return null;
@@ -22,16 +44,16 @@ const WeatherDisplay = ({ data, temperature, units, onUnitChange }) => {
 
   return (
     <div className="weather-output">
-      {data && data.name? (
+      {data && data.name ? (
         <>
           <h2>{data.name}</h2>
           <div className="detail">
-          <img src={icon} alt="" />
+            {icon && <img src={icon} alt="" />}
           </div>
           <div className="weather-details">
             <div className="detail">
               <label>Current Temp:</label>
-              <span>{temperature} {units === 'metric'? '°C' : '°F'}</span>
+              <span>{getConvertedTemperature()}</span>
             </div>
             <div className="detail">
               <label>Sky Conditions:</label>
@@ -43,16 +65,16 @@ const WeatherDisplay = ({ data, temperature, units, onUnitChange }) => {
             </div>
             <div className="detail">
               <label>Feels Like:</label>
-              <span>{getFeelsLikeTemperature()} {units === 'metric'? '°C' : '°F'}</span>
+              <span>{getFeelsLikeTemperature()}</span>
             </div>
             <div className="detail">
               <div>
                 <label>Wind:</label>
                 <span>{data.wind.speed} m/s</span>
-                </div>
+              </div>
             </div>
             <div className="detail">
-            <div>
+              <div>
                 <label>Visibility:</label>
                 <span>{data.visibility / 1000} km</span>
               </div>

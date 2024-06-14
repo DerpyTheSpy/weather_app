@@ -11,6 +11,36 @@ body {
   background-color: #f9f9f9;
 }
 
+.hamburger-menu {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 30px;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.toggle-preferences {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  background-color: #4CAF50;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  z-index: 10; /* add this to ensure the button is on top of other elements */
+}
+
+.toggle-preferences:hover,
+.hamburger-menu:hover {
+  background-color: #3e8e41;
+}
+
 .user-preferences-container {
   display: none;
   position: absolute;
@@ -37,21 +67,27 @@ body {
   right: 10px;
   background-color: #4CAF50;
   color: #fff;
-  padding: 10px 20px;
+  padding: 5px 10px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  font-size: 16px;
-  z-index: 11; /* bring it in front of the user preferences container */
+  font-size: 12px;
+  z-index: 20;
 }
 
 .exit-button:hover {
   background-color: #3e8e41;
 }
 
+.user-preferences-container.show {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
 
 @media (max-width: 1400px) {
- .user-preferences-container {
+  .user-preferences-container {
     position: relative;
     top: auto;
     right: auto;
@@ -66,81 +102,33 @@ body {
 }
 
 @media (max-width: 900px) {
- .user-preferences-container {
+  .user-preferences-container {
     width: calc(30% - 20px);
   }
 }
+
 @media (min-width: 600px) {
   .user-preferences-container {
-     width: 600px; /* fixed width for screen sizes above 600px */
-   }
- }
- @media (max-width: 600px) {
+    width: 600px; /* fixed width for screen sizes above 600px */
+  }
+}
+
+@media (max-width: 600px) {
   .user-preferences-container {
-     width: calc(20% - 20px);
-     position: fixed;
-     top: 0;
-     left: 0;
-     width: 100%;
-     height: 100vh;
-     background-color: rgba(255, 255, 255, 0.8);
-     z-index: 10;
-   }
+    width: calc(20% - 20px);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(255, 255, 255, 0.8);
+    z-index: 10;
+  }
   .exit-button {
-     display: block; /* show the button when screen width is below 600px */
-   }
- }
-.user-preferences-container.show {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-/* Toggle Preferences button */
-.toggle-preferences-button {
-  position: fixed;
-  bottom: 20px;
-  left: 20px;
-  background-color: #4CAF50;
-  color: #fff;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-  z-index: 10; /* add this to ensure the button is on top of other elements */
+    display: block; /* show the button when screen width is below 600px */
+  }
 }
 
-.toggle-preferences-button:hover {
-  background-color: #3e8e41;
-}
-
-.user-preferences-container.show {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-/* Toggle Preferences button */
-.toggle-preferences-button {
-  position: fixed;
-  bottom: 20px;
-  left: 20px;
-  background-color: #4CAF50;
-  color: #fff;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-  z-index: 10; /* add this to ensure the button is on top of other elements */
-}
-
-.toggle-preferences-button:hover {
-  background-color: #3e8e41;
-}
-
-/* Center the form and make it look like a form */
 .user-preferences-form > div {
   display: inline-block;
   max-width: 400px;
@@ -194,11 +182,19 @@ body {
   background-color: #23527c;
 }
 
-/* Style the list of preferences */
 .user-preferences-list {
   list-style: none;
   padding: 0;
   margin: 0;
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 10%;
+  height: 100%;
+  background-color: #f9f9f9;
+  border-left: 1px solid #ccc;
+  z-index: 5;
+  overflow-y: auto;
 }
 
 .user-preferences-list li {
@@ -270,7 +266,6 @@ button[type="submit"]:hover {
   background-color: #23527c;
 }
 
-/* Style the list of preferences */
 .preferences-list {
   list-style: none;
   padding: 0;
@@ -307,6 +302,7 @@ button[type="submit"]:hover {
   background-color: white;
   color: #23527c;
 }
+
 .button-group {
   display: flex;
   flex-direction: column;
@@ -336,10 +332,6 @@ button[type="submit"]:hover {
   font-size: 16px;
   margin: 4px 2px;
   transition-duration: 0.4s;
-}
-
-.create-button {
-  margin-right: 20px;
 }
 
 .create-button:hover,
