@@ -56,6 +56,9 @@ const App = ({ selectedCity }) => {
 
   const handleUnitChange = (unit) => {
     setPreferences({ units: unit });
+    if (data && inputValue) {
+      handleSearch(inputValue, unit); // Re-fetch data with the new units
+    }
   };
 
   useEffect(() => {
@@ -77,15 +80,15 @@ const App = ({ selectedCity }) => {
     }
   }, [data, animation]);
 
-  const handleSearch = async (location) => {
+  const handleSearch = async (location, unit = preferences.units) => {
     setLoading(true);
     setAnimation(null);
     setErrorMessage(null);
     try {
       const response = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=${preferences.units}&appid=${process.env.REACT_APP_API_KEY}`
+        `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=${unit}&appid=${process.env.REACT_APP_API_KEY}`
       );
-  
+
       if (!response.ok) {
         if (response.status === 404) {
           setErrorMessage('Error: City not found.'); // Set error message
@@ -98,7 +101,7 @@ const App = ({ selectedCity }) => {
         }, loadingDuration)
         return;
       }
-  
+
       const data = await response.json();
       console.log('Data state:', data);
       if (data && data.weather && data.weather.length > 0) {
@@ -121,10 +124,10 @@ const App = ({ selectedCity }) => {
       }, loadingDuration);
     }
   };
-  
 
-  const handleLocationUpdate = (location) => {
-    handleSearch(location);
+  const handleLocationUpdate = (location, units) => {
+    setPreferences({ units }); // Update the units based on the selected preference
+    handleSearch(location, units);
   };
 
   return (

@@ -60,6 +60,24 @@ body {
   z-index: 10; 
 }
 
+.manage-preferences-container {
+  display: none;
+  position: fixed;
+  top: 18.3%;
+  right: 0;
+  bottom: 0;
+  width: 20%; /* adjust the width to cover 1/5 of the page */
+  background-color: #fff;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+}
+
+.manage-preferences-container.show {
+  display: block;
+}
 .exit-button {
   display: none;
   position: absolute;
@@ -111,10 +129,23 @@ body {
   .user-preferences-container {
     width: 600px; /* fixed width for screen sizes above 600px */
   }
+  .manage-preferences-container {
+    width: 600px; /* fixed width for screen sizes above 600px */
+  }
 }
 
 @media (max-width: 600px) {
   .user-preferences-container {
+    width: calc(20% - 20px);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(255, 255, 255, 0.8);
+    z-index: 10;
+  }
+  .manage-preferences-container {
     width: calc(20% - 20px);
     position: fixed;
     top: 0;

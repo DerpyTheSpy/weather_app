@@ -142,7 +142,7 @@ function UserPreferences({ onLocationUpdate }) {
         Toggle Preferences
       </button>
 
-      <div className={`user-preferences-container ${showManagePreferences ? 'show' : ''}`}>
+      <div className={`manage-preferences-container ${showManagePreferences ? 'show' : ''}`}>
         <button onClick={handleToggleManagePreferences} className='exit-button'>Exit</button>
         <h2>Manage Preferences</h2>
         <div className="preferences-list">

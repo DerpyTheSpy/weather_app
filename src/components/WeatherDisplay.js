@@ -6,14 +6,30 @@ const WeatherDisplay = ({ data, units, onUnitChange }) => {
 
   const getTemperature = () => {
     if (data && data.main) {
-      return `${data.main.temp} ${units === 'metric' ? '°C' : '°F'}`;
+      const temp = units === 'metric' ? data.main.temp : (data.main.temp * 9/5) + 32;
+      return `${Math.round(temp)} ${units === 'metric' ? '°C' : '°F'}`;
     }
     return null;
   };
 
   const getFeelsLikeTemperature = () => {
     if (data && data.main) {
-      return `${data.main.feels_like} ${units === 'metric' ? '°C' : '°F'}`;
+      const feelsLike = units === 'metric' ? data.main.feels_like : (data.main.feels_like * 9/5) + 32;
+      return `${Math.round(feelsLike)} ${units === 'metric' ? '°C' : '°F'}`;
+    }
+    return null;
+  };
+
+  const getWindSpeed = () => {
+    if (data && data.wind) {
+      return `${Math.round(data.wind.speed)} ${units === 'metric' ? 'm/s' : 'mph'}`;
+    }
+    return null;
+  };
+
+  const getVisibility = () => {
+    if (data && data.visibility) {
+      return `${units === 'metric' ? Math.round(data.visibility / 1000) : Math.round(data.visibility / 1609)} ${units === 'metric' ? 'km' : 'miles'}`;
     }
     return null;
   };
@@ -46,13 +62,13 @@ const WeatherDisplay = ({ data, units, onUnitChange }) => {
             <div className="detail">
               <div>
                 <label>Wind:</label>
-                <span>{data.wind.speed} m/s</span>
+                <span>{getWindSpeed()}</span>
               </div>
             </div>
             <div className="detail">
               <div>
                 <label>Visibility:</label>
-                <span>{data.visibility / 1000} km</span>
+                <span>{getVisibility()}</span>
               </div>
             </div>
             <div className="detail flex">
