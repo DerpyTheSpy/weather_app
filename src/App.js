@@ -36,11 +36,12 @@ const App = ({ selectedCity }) => {
   const [error, setError] = useState(null);
   const [animation, setAnimation] = useState(null);
   const [inputValue, setInputValue] = useState('');
-  const [preferences, setPreferences] = useState({ units: 'metric' });
+  const [preferences, setPreferences] = useState({ units: 'metric', location: '' });
   const [errorMessage, setErrorMessage] = useState(null); 
   const [loadingDuration] = useState(1000); // Set loading duration to 1 second
 
   useEffect(() => {
+    console.log('App mounted');
     document.body.style.transition = 'background-image 0.5s ease';
     document.body.style.backgroundSize = 'cover';
     document.body.style.backgroundPosition = 'top center';
@@ -55,7 +56,7 @@ const App = ({ selectedCity }) => {
   }, []);
 
   const handleUnitChange = (unit) => {
-    setPreferences({ units: unit });
+    setPreferences((prev) => ({ ...prev, units: unit }));
     if (data && inputValue) {
       handleSearch(inputValue, unit); // Re-fetch data with the new units
     }
@@ -126,9 +127,15 @@ const App = ({ selectedCity }) => {
   };
 
   const handleLocationUpdate = (location, units) => {
-    setPreferences({ units }); // Update the units based on the selected preference
+    setPreferences({ units, location });
     handleSearch(location, units);
   };
+
+  useEffect(() => {
+    if (selectedCity) {
+      handleSearch(selectedCity, preferences.units);
+    }
+  }, [selectedCity]);
 
   return (
     <div className="App" style={{ backgroundSize: 'cover' }}>
