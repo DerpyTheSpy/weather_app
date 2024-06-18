@@ -5,7 +5,7 @@ import RainAnimation from './components/RainAnimation.js';
 import SnowAnimation from './components/SnowAnimation.js';
 import ThunderstormAnimation from './components/ThunderstormAnimation.js';
 import UserPreferences from './components/UserPreferences.js';
-import './App.css'
+import './App.css';
 
 const getBackgroundImage = (icon) => {
   const requireImage = (imageName) => require(`./components/Images/${imageName}.jpg`);
@@ -36,11 +36,12 @@ const App = ({ selectedCity }) => {
   const [error, setError] = useState(null);
   const [animation, setAnimation] = useState(null);
   const [inputValue, setInputValue] = useState('');
-  const [preferences, setPreferences] = useState({ units: 'metric' });
+  const [preferences, setPreferences] = useState({ units: 'metric', location: '' });
   const [errorMessage, setErrorMessage] = useState(null); 
   const [loadingDuration] = useState(1000); // Set loading duration to 1 second
 
   useEffect(() => {
+    console.log('App mounted');
     document.body.style.transition = 'background-image 0.5s ease';
     document.body.style.backgroundSize = 'cover';
     document.body.style.backgroundPosition = 'top center';
@@ -55,7 +56,10 @@ const App = ({ selectedCity }) => {
   }, []);
 
   const handleUnitChange = (unit) => {
-    setPreferences({ units: unit });
+    setPreferences((prev) => ({ ...prev, units: unit }));
+    if (data && inputValue) {
+      handleSearch(inputValue, unit); // Re-fetch data with the new units
+    }
   };
 
   useEffect(() => {
@@ -77,15 +81,15 @@ const App = ({ selectedCity }) => {
     }
   }, [data, animation]);
 
-  const handleSearch = async (location, units) => {
+  const handleSearch = async (location, unit = preferences.units) => {
     setLoading(true);
     setAnimation(null);
     setErrorMessage(null);
     try {
       const response = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=${units}&appid=${process.env.REACT_APP_API_KEY}`
+        `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=${unit}&appid=${process.env.REACT_APP_API_KEY}`
       );
-  
+
       if (!response.ok) {
         if (response.status === 404) {
           setErrorMessage('Error: City not found.'); // Set error message
@@ -98,7 +102,7 @@ const App = ({ selectedCity }) => {
         }, loadingDuration)
         return;
       }
-  
+
       const data = await response.json();
       console.log('Data state:', data);
       if (data && data.weather && data.weather.length > 0) {
@@ -121,25 +125,17 @@ const App = ({ selectedCity }) => {
       }, loadingDuration);
     }
   };
-  
 
-  const handleLocationUpdate = (location) => {
-    handleSearch(location, preferences.units);
+  const handleLocationUpdate = (location, units) => {
+    setPreferences({ units, location });
+    handleSearch(location, units);
   };
 
-  const getConvertedTemperature = () => {
-    if (data && data.main) {
-      switch (preferences.units) {
-        case 'metric':
-          return Math.round(data.main.temp - 273.15);
-        case 'imperial':
-          return Math.round((data.main.temp - 273.15) * 1.8 + 32);
-        default:
-          return Math.round(data.main.temp - 273.15);
-      }
+  useEffect(() => {
+    if (selectedCity) {
+      handleSearch(selectedCity, preferences.units);
     }
-    return null;
-  };
+  }, [selectedCity]);
 
   return (
     <div className="App" style={{ backgroundSize: 'cover' }}>
@@ -166,7 +162,7 @@ const App = ({ selectedCity }) => {
             {animation === 'snow' && <SnowAnimation animation={animation} />}
             {animation === 'thunderstorm' && <ThunderstormAnimation />}
           </div>
-          <WeatherDisplay data={data} temperature={getConvertedTemperature()} units={preferences.units} onUnitChange={handleUnitChange} />
+          <WeatherDisplay data={data} units={preferences.units} onUnitChange={handleUnitChange} />
         </div>
       )}
       <UserPreferences onLocationUpdate={handleLocationUpdate} />
