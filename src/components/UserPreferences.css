@@ -15,11 +15,16 @@ body {
   position: fixed;
   top: 20px;
   right: 20px;
+  padding-left: 5px;
+  margin-bottom: 5px;
+  padding-right: 5px;
   background: none;
   border: none;
+  background-color: #4CAF50;
   font-size: 30px;
   cursor: pointer;
   z-index: 10;
+  border-radius: 5px;
 }
 
 .toggle-preferences {
@@ -33,19 +38,19 @@ body {
   border-radius: 5px;
   cursor: pointer;
   font-size: 16px;
-  z-index: 10; /* add this to ensure the button is on top of other elements */
+  z-index: 10;
 }
 
 .toggle-preferences:hover,
 .hamburger-menu:hover {
-  background-color: #3e8e41;
+  background-color: #13bd19;
 }
 
 .user-preferences-container {
   display: none;
   position: absolute;
   top: 18.3%;
-  right: 51%; 
+  right: 51%;
   transform: translateX(-50%);
   overflow: hidden;
   background-color: #fff;
@@ -53,24 +58,29 @@ body {
   border: 1px solid #ddd;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  width: calc(50% - 20px); /* default width */
-  max-width: 500px; 
+  width: calc(50% - 20px);
+  max-width: 500px;
   min-width: 300px;
   min-height: 200px;
-  z-index: 10; 
+  z-index: 10;
 }
 
 .manage-preferences-container {
   display: none;
   position: fixed;
-  top: 18.3%;
+  top: 60px;
+  margin-top: 15px;
   right: 0;
   bottom: 0;
-  width: 20%; /* adjust the width to cover 1/5 of the page */
+  width: 12.5%;
+  max-width: 300px;
   background-color: #fff;
   padding: 20px;
   border: 1px solid #ddd;
-  border-radius: 10px;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   z-index: 10;
 }
@@ -78,6 +88,7 @@ body {
 .manage-preferences-container.show {
   display: block;
 }
+
 .exit-button {
   display: none;
   position: absolute;
@@ -117,46 +128,73 @@ body {
     right: 0;
     z-index: 2;
   }
+  .manage-preferences-container {
+    position: relative;
+    top: auto;
+    right: auto;
+    transform: none;
+    margin-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+    z-index: 2;
+    min-width: 500px;
+  }
 }
 
 @media (max-width: 900px) {
   .user-preferences-container {
     width: calc(30% - 20px);
   }
+  .manage-preferences-container {
+    width: 600px;
+    
+  }
 }
 
 @media (min-width: 600px) {
   .user-preferences-container {
-    width: 600px; /* fixed width for screen sizes above 600px */
+    width: 600px;
   }
   .manage-preferences-container {
-    width: 600px; /* fixed width for screen sizes above 600px */
+    width: 600px;
+   
   }
+  
 }
 
 @media (max-width: 600px) {
   .user-preferences-container {
-    width: calc(20% - 20px);
+    width: 100%;
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
+    right: 0;
     height: 100vh;
     background-color: rgba(255, 255, 255, 0.8);
     z-index: 10;
+    margin: 0;
+    padding: 20px;
+    border-radius: 0;
+    box-shadow: none;
   }
   .manage-preferences-container {
-    width: calc(20% - 20px);
-    position: fixed;
-    top: 0;
-    left: 0;
     width: 100%;
     height: 100vh;
     background-color: rgba(255, 255, 255, 0.8);
     z-index: 10;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    margin: 0;
+    padding: 20px;
+    border-radius: 0;
+    box-shadow: none;
   }
   .exit-button {
-    display: block; /* show the button when screen width is below 600px */
+    display: block;
   }
 }
 
@@ -272,7 +310,7 @@ body {
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
-  margin-left:10px;
+  margin-left: 10px;
 }
 
 .form-group input {
@@ -327,6 +365,9 @@ button[type="submit"]:hover {
   font-size: 16px;
   margin: 4px 2px;
   transition-duration: 0.4s;
+  width: 100%;
+  display: block;
+  padding: 10px;
 }
 
 .preferences-list button:hover {
@@ -343,6 +384,8 @@ button[type="submit"]:hover {
   padding: 10px;
   border-radius: 5px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 40px;
+  border-bottom: 1px solid #ccc;
 }
 
 .create-button,

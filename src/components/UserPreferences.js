@@ -49,19 +49,22 @@ function UserPreferences({ onLocationUpdate }) {
     try {
       console.log('Creating new preference:', newPreference);
       // Check if the location value is valid (not null, empty, or contains numbers)
-      if (!newPreference.location || !/^[a-zA-Z\s]+$/.test(newPreference.location)) {
+      if (!newPreference.location ||!/^[a-zA-Z\s]+$/.test(newPreference.location)) {
         throw new Error('Invalid location value. Please enter a non-empty city name without numbers.');
       }
-
+  
+      // Set the units value correctly
+      newPreference.units = newPreference.units || 'metric'; // default to metric if not specified
+  
       const newPreferenceData = await createUserPreference(newPreference);
       setPreferences((prevPreferences) => [...prevPreferences, newPreferenceData]);
       setNewPreference({ units: '', location: '', notifications: false });
     } catch (error) {
       console.error('Error creating user preference:', error);
-
+  
       if (error.message.includes('location')) {
         alert(error.message);
-        setNewPreference((prevState) => ({ ...prevState, location: '' }));
+        setNewPreference((prevState) => ({...prevState, location: '' }));
       }
     }
   };
@@ -145,13 +148,6 @@ function UserPreferences({ onLocationUpdate }) {
       <div className={`manage-preferences-container ${showManagePreferences ? 'show' : ''}`}>
         <button onClick={handleToggleManagePreferences} className='exit-button'>Exit</button>
         <h2>Manage Preferences</h2>
-        <div className="preferences-list">
-          {preferences.map((preference) => (
-            <button key={preference.id} onClick={() => handleSelectPreference(preference)}>
-              {preference.location}
-            </button>
-          ))}
-        </div>
         {selectedPreference && (
           <div>
             <div className="form-group">
@@ -185,25 +181,34 @@ function UserPreferences({ onLocationUpdate }) {
                 }
               />
             </div>
-            <button
-              type="button"
-              onClick={() => handleUpdatePreference(selectedPreference.id, updatedPreference)}
-              className="update-button"
-              disabled={isUpdating}>
-              {isUpdating ? 'Updating...' : 'Update Preference'}
-            </button>
-            <button
-              type="button"
-              onClick={() => handleDeletePreference(selectedPreference.id)}
-              className="delete-button"
-              disabled={isDeleting}>
-              {isDeleting ? 'Deleting...' : 'Delete Preference'}
-            </button>
-            <button type="button" onClick={handleApplyPreference} className="apply-button">
-              Apply Preference
-            </button>
+            <div className="button-group">
+              <button
+                type="button"
+                onClick={() => handleUpdatePreference(selectedPreference.id, updatedPreference)}
+                className="update-button"
+                disabled={isUpdating}>
+                {isUpdating? 'Updating...' : 'Update Preference'}
+              </button>
+              <button
+                type="button"
+                onClick={() => handleDeletePreference(selectedPreference.id)}
+                className="delete-button"
+                disabled={isDeleting}>
+                {isDeleting? 'Deleting...' : 'Delete Preference'}
+              </button>
+              <button type="button" onClick={handleApplyPreference} className="apply-button">
+                Apply Preference
+              </button>
+            </div>
           </div>
         )}
+        <div className="preferences-list">
+          {preferences.map((preference) => (
+            <button key={preference.id} onClick={() => handleSelectPreference(preference)}>
+              {preference.location}
+            </button>
+          ))}
+        </div>
       </div>
 
       <div className={`user-preferences-container ${showCreatePreferences ? 'show' : ''}`}>
