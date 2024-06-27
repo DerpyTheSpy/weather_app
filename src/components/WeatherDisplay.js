@@ -44,7 +44,7 @@ const WeatherDisplay = ({ data, units, onUnitChange }) => {
       },
       wind: {
         ...dataToConvert.wind,
-        speed: dataToConvert.wind.speed * 0.44704, // Convert mph to m/s
+        speed: dataToConvert.wind.speed * 1.60934, // Convert mph to km/h
       },
       visibility: dataToConvert.visibility * 1.60934, // Convert miles to km
     };
@@ -61,7 +61,7 @@ const WeatherDisplay = ({ data, units, onUnitChange }) => {
       },
       wind: {
         ...dataToConvert.wind,
-        speed: dataToConvert.wind.speed / 0.44704, // Convert m/s to mph
+        speed: dataToConvert.wind.speed / 1.60934, // Convert km/h to mph
       },
       visibility: dataToConvert.visibility / 1.60934, // Convert km to miles
     };
@@ -83,7 +83,7 @@ const WeatherDisplay = ({ data, units, onUnitChange }) => {
 
   const getWindSpeed = () => {
     if (displayData && displayData.wind) {
-      return `${Math.round(displayData.wind.speed)} ${unit === 'metric' ? 'm/s' : 'mph'}`;
+      return `${Math.round(displayData.wind.speed)} ${unit === 'metric' ? 'km/h' : 'mph'}`;
     }
     return null;
   };
