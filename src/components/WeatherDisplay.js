@@ -1,14 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './WeatherDisplay.css';
 
 const WeatherDisplay = ({ data, units, onUnitChange }) => {
-  const [originalData, setOriginalData] = useState(null);
   const [displayData, setDisplayData] = useState(null);
   const [unit, setUnit] = useState(units);
+  const originalUnit = useRef(units); // Using useRef to store the original unit
 
   useEffect(() => {
     if (data) {
-      setOriginalData(data);
       setDisplayData(data);
     }
   }, [data]);
@@ -22,10 +21,10 @@ const WeatherDisplay = ({ data, units, onUnitChange }) => {
     setUnit(newUnit);
     onUnitChange(newUnit);
 
-    if (newUnit !== originalData.main.temp_unit) {
-      convertData(originalData, newUnit);
+    if (newUnit !== originalUnit.current) {
+      convertData(data, newUnit);
     } else {
-      setDisplayData(originalData);
+      setDisplayData(data);
     }
   };
 
@@ -37,6 +36,7 @@ const WeatherDisplay = ({ data, units, onUnitChange }) => {
   const convertToMetric = (dataToConvert) => {
     return {
       ...dataToConvert,
+      unit: 'metric',
       main: {
         ...dataToConvert.main,
         temp: ((dataToConvert.main.temp - 32) * 5) / 9,
@@ -53,6 +53,7 @@ const WeatherDisplay = ({ data, units, onUnitChange }) => {
   const convertToImperial = (dataToConvert) => {
     return {
       ...dataToConvert,
+      unit: 'imperial',
       main: {
         ...dataToConvert.main,
         temp: (dataToConvert.main.temp * 9) / 5 + 32,
